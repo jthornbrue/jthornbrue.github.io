@@ -4,15 +4,21 @@ angular.module("app", [])
 .controller("main", function ($scope, $log, $http, $rootScope) {
 
     $scope.obj = undefined;
+    $scope.valid = true;
     
     function upload(file, result) {
     
-    	$scope.loaded = true;
-    
     	$scope.file = file;
-    	
     	$scope.json = JSON.parse(result);
+    	document.getElementById('plotly').innerHTML = '';
     	
+    	if ($scope.json.capture == undefined) {
+    		$scope.valid = false;
+    		return;
+    	}
+    
+    	$scope.valid = true;
+    
     	var gyr = _.map($scope.json.capture.calibratedSensorData.samples, function (sample) {
             
             var xyz = _.map(sample[2].split(','),  parseFloat);

@@ -43,8 +43,11 @@
     
     <div id=main>
     
-    	<p ng-if="!loaded" class="text-muted">Drag a JSON file anywhere on this page.</p>
-    	<h3 ng-if="loaded">{{file.name}}</h3>
+    	<p ng-if="!file" class="text-muted">Drag a JSON file anywhere on this page.</p>
+    	<h4 ng-if="file" class="text-muted">{{file.name}}</h4>
+    	<div ng-show="!valid" class="alert alert-danger">
+    		 <i class="fa fa-exclamation-triangle"></i> <strong>Oh, snap!</strong> That file isn't valid.</span>
+    	</div>
     	<div id="plotly"></div>
     	
     </div>
