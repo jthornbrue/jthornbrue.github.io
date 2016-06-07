@@ -1,0 +1,19 @@
+.nowrap {
+    white-space: nowrap;
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	min-height: 100%;
+}
+
+.navbar {
+	border-radius: 0;
+}
+
+#main {
+	margin:2em;
+}
