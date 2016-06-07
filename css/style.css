@@ -17,3 +17,7 @@ body {
 #main {
 	margin:2em;
 }
+
+#plotly {
+	height: 900px;
+}

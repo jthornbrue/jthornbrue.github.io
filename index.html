@@ -43,9 +43,9 @@
     
     <div id=main>
     
-    	<p ng-if="!file" class="text-muted">Drag a JSON file anywhere on this page.</p>
-    	<h3 ng-if="file">{{obj.file.name}}</h3>
-    	<div id="cal-gyr"></div>
+    	<p ng-if="!loaded" class="text-muted">Drag a JSON file anywhere on this page.</p>
+    	<h3 ng-if="loaded">{{file.name}}</h3>
+    	<div id="plotly"></div>
     	
     </div>
 
