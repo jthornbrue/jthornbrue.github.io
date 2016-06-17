@@ -6,7 +6,7 @@
     <meta charset="utf-8">
 
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<!--     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 <!--     <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 
@@ -42,11 +42,32 @@
     </nav>
     
     <div id=main>
-    
     	<p ng-if="!file" class="text-muted">Drag a JSON file anywhere on this page.</p>
-    	<h4 ng-if="file" class="text-muted">{{file.name}}</h4>
-    	<div ng-show="!valid" class="alert alert-danger">
-    		 <i class="fa fa-exclamation-triangle"></i> <strong>Oh, snap!</strong> That file isn't valid.</span>
+    	<div ng-if="file">
+    		<h4><a href="" ng-click="toggle_show_metrics()"><i class="fa" ng-class="show_metrics ? 'fa-minus-square-o' : 'fa-plus-square-o'"></i> Details</a></h4>
+    		<table ng-if="show_metrics" class="table table-striped table-hover">
+    			<thead>
+    				<tr>
+    					<th>Name</th>
+    					<th>Value</th>
+    					<th>Units</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+    				<tr>
+    					<td>file</td>
+    					<td colspan=2>{{file.name}}</td>
+    				</tr>
+    				<tr ng-repeat="metric in metrics">
+    					<td>{{metric.type}}</td>
+    					<td>{{metric.value}}</td>
+    					<td>{{metric.storageUnits}}</td>
+    				</tr>
+    			</tbody>
+    		</table>
+    		<div ng-show="!valid" class="alert alert-danger">
+    		 	<i class="fa fa-exclamation-triangle"></i> <strong>Oh, snap!</strong> That file isn't valid.</span>
+    		</div>
     	</div>
     	<div id="plotly"></div>
     	

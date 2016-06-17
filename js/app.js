@@ -1,28 +1,54 @@
-/* angular module dependencies */
+// Putt Visualization
+// James Thornbrue
+// 2016-06-10
+
+// unit conversions
+function degrees(r) {
+	return r * 180.0 / Math.PI;
+}
+
+function g(mps) {
+	return mps / 9.81;
+}
+
+function mph(mps) {
+	return mps * 2.23694;
+}
+
+function inches(m) {
+	return m * 39.3701;
+}
+
+// helper functions
+function norm(obj) {
+	return Math.sqrt(obj.x * obj.x + obj.y * obj.y + obj.z * obj.z);
+}
+
+function limit(lim, x) {
+	return x > lim ? lim : x < -lim ? -lim : x;
+}
+
+// angular
 angular.module("app", [])
 
 .controller("main", function ($scope, $log, $http, $rootScope) {
 
+	$scope.show_metrics = true;
     $scope.obj = undefined;
     $scope.valid = true;
+    $scope.metrics = undefined;
     
-    function to_arrays(items) {
-    	return {
-    		timestamp: _.pluck(items, 'timestamp'),
-    		x: _.pluck(items, 'x'),
-    		y: _.pluck(items, 'y'),
-    		z: _.pluck(items, 'z'),
-    		norm: _.map(items, function(item) {
-    			return Math.sqrt(item.x * item.x + item.y * item.y + item.z * item.z);
-    		})
-    	};
+    $scope.toggle_show_metrics = function () {
+    	$scope.show_metrics = !$scope.show_metrics;
     }
     
     function upload(file, result) {
     
     	$scope.file = file;
     	$scope.json = JSON.parse(result);
-    	document.getElementById('plotly').innerHTML = '';
+    	$scope.metrics = [];
+        
+        document.getElementById('plotly').innerHTML = '';
     	
     	if ($scope.json.capture == undefined) {
     		$scope.valid = false;
@@ -30,8 +56,8 @@ angular.module("app", [])
     	}
     
     	$scope.valid = true;
-    
-    	var gyr = to_arrays(_.map($scope.json.capture.calibratedSensorData.samples, function (sample) {
+    	
+    	var gyr = _.map($scope.json.capture.calibratedSensorData.samples, function (sample) {
             
             var xyz = _.map(sample[2].split(','),  parseFloat);
             	
@@ -41,19 +67,7 @@ angular.module("app", [])
             	y: xyz[1],
             	z: xyz[2]
             };
-        }));
-        
-        var acc = to_arrays(_.map($scope.json.capture.calibratedSensorData.samples, function (sample) {
-            
-        	var xyz = _.map(sample[1].split(','),  parseFloat);
-            	
-        	return {
-            	timestamp: sample[0],
-            	x: xyz[0],
-            	y: xyz[1],
-            	z: xyz[2]
-            };
-        }));
+        });
         
         var vel;
         
@@ -62,7 +76,7 @@ angular.module("app", [])
         		if (metric.type == 'clubhead velocity vector') {
         			var dt = metric.samplingPeriod;
         			var k = -1;
-        			vel = to_arrays(_.map(metric.values, function (value) {
+        			vel = _.map(metric.values, function (value) {
         				++k;
         				var xyz = _.map(value.split(','), parseFloat);
         				
@@ -72,93 +86,92 @@ angular.module("app", [])
         					y: xyz[1],
         					z: xyz[2]
         				};
-        			}));        			
+        			});        			
+        		} else if (metric.composition == 'scalar') {
+        			$scope.metrics.push(metric);
         		}
         	});        
         });
         
         var data = [];
         
-        if (acc) {
-        	data.push({
-        		x: acc.timestamp,
-        		y: acc.x,
-        		name: 'acc x',
-        		type: 'scatter'
-        	});
-        	
-        	data.push({
-        		x: acc.timestamp,
-        		y: acc.y,
-        		name: 'acc y',
-        		type: 'scatter'
-        	});
-        	
-        	data.push({
-        		x: acc.timestamp,
-        		y: acc.z,
-        		name: 'acc z',
-        		type: 'scatter'
-        	});
-        }
-        
         if (gyr) {
         	data.push({
-        		x: gyr.timestamp,
-        		y: gyr.x,
-        		name: 'gyr x',
+        		x: _.pluck(gyr, 'timestamp'),
+        		y: _.map(_.pluck(gyr, 'x'), degrees),
+        		name: 'gyro x',
         		type: 'scatter',
-        		yaxis: 'y2'
+        		yaxis: 'y1'
         	});
         	
         	data.push({
-        		x: gyr.timestamp,
-        		y: gyr.y,
-        		name: 'gyr y',
+        		x: _.pluck(gyr, 'timestamp'),
+        		y: _.map(_.pluck(gyr, 'y'), degrees),
+        		name: 'gyro y',
         		type: 'scatter',
-        		yaxis: 'y2'
+        		yaxis: 'y1'
         	});
         	
         	data.push({
-        		x: gyr.timestamp,
-        		y: gyr.z,
-        		name: 'gyr z',
+        		x: _.pluck(gyr, 'timestamp'),
+        		y: _.map(_.pluck(gyr, 'z'), degrees),
+        		name: 'gyro z',
         		type: 'scatter',
-        		yaxis: 'y2'
+        		yaxis: 'y1'
         	});
         }
         
         if (vel) {
+        	var acc = _.map(_.zip(_.slice(vel, 0, vel.length - 1), _.slice(vel, 1)), function (pair) {
+        		var v0 = _.first(pair);
+        		var v1 = _.last(pair);
+        		var dt = v1.timestamp - v0.timestamp;
+        		return {
+        			'timestamp': v1.timestamp,
+        			'x': (v1.x - v0.x) / dt,
+        			'y': (v1.y - v0.y) / dt,
+        			'z': (v1.z - v0.z) / dt
+        		};
+        	});
+        	
+        	var pos = [];
+        	var sum = {
+        		'timestamp': _.first(vel).timestamp,
+        		'x': 0.0,
+        		'y': 0.0,
+        		'z': 0.0
+        	};
+        	_.each(vel, function (v) {
+        		var dt = v.timestamp - sum.timestamp;
+        		sum.timestamp = v.timestamp;
+        		sum.x += v.x * dt;
+        		sum.y += v.y * dt;
+        		sum.z += v.z * dt;
+        		pos.push(_.clone(sum));
+        	});
+        
         	data.push({
-        		x: vel.timestamp,
-        		y: vel.x,
-        		name: 'vel x',
+        		x: _.pluck(acc, 'timestamp'),
+        		y: _.map(_.map(_.map(acc, 'x'), g), _.partial(limit, 10)),
+        		name: 'acc (g)',
         		type: 'scatter',
-        		yaxis: 'y3'
+        		yaxis: 'y2'
         	});
         	
         	data.push({
-        		x: vel.timestamp,
-        		y: vel.y,
-        		name: 'vel y',
+        		x: _.pluck(vel, 'timestamp'),
+        		y: _.map(_.pluck(vel, 'x'), mph),
+        		name: 'speed (mph)',
         		type: 'scatter',
-        		yaxis: 'y3'
+        		yaxis: 'y2'
         	});
         	
         	data.push({
-        		x: vel.timestamp,
-        		y: vel.z,
-        		name: 'vel z',
+        		x: _.pluck(pos, 'timestamp'),
+        		y: _.map(_.pluck(pos, 'x'), inches),
+        		name: 'position (in)',
         		type: 'scatter',
-        		yaxis: 'y3'
-        	});
-        	
-        	data.push({
-        		x: vel.timestamp,
-        		y: vel.norm,
-        		name: 'speed',
-        		type: 'scatter',
-        		yaxis: 'y3'
+        		yaxis: 'y2'
         	});
         }
         
@@ -220,10 +233,9 @@ angular.module("app", [])
     	});
         
         var layout = {
-        	yaxis: {domain: [0.7, 1], title: 'm/s<sup>2</sup>'},
-        	yaxis2: {domain: [0.35, 0.65], title:'deg/s'},
-        	yaxis3: {domain: [0, 0.3], title:'m/s'},
-        	xaxis: {anchor: 'y3'},
+        	yaxis: {domain: [0.54, 1], title: 'deg/s'},
+        	yaxis2: {domain: [0, 0.46]},
+        	xaxis: {anchor: 'y2'},
         	shapes: shapes,
         	annotations: annotations
         };
