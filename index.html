@@ -46,190 +46,192 @@
         <div ng-show="!valid" class="alert alert-danger">
             <i class="fa fa-exclamation-triangle"></i> <strong>Oh, snap!</strong> {{file.name}} isn't valid.</span>
         </div>
-        <div ng-if="file && valid">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4><a href="" ng-click="toggle_show_metrics()" class="no-underline"><i class="fa" ng-class="show_metrics ? 'fa-minus-square-o' : 'fa-plus-square-o'"></i> Details</a></h4>
+        <div class="row">
+            <div class="col-lg-5">
+                <div ng-if="file && valid" class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4><a href="" ng-click="toggle_show_metrics()" class="no-underline"><i class="fa" ng-class="show_metrics ? 'fa-minus-square-o' : 'fa-plus-square-o'"></i> Details</a></h4>
+                    </div>
+                    <table ng-if="show_metrics" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Units</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="divider">
+                                <td>File Name</td>
+                                <td colspan="2">{{file.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>Starting Time</td>
+                                <td colspan="2">{{metric('starting time').value}}</td>
+                            </tr>
+                            <tr>
+                                <td>Ending Time</td>
+                                <td colspan="2">{{metric('ending time').value}}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Backstroke Time</td>
+                                <td>{{metric('backstroke time').value}}</td>
+                                <td>{{metric('backstroke time').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Forward Stroke Time</td>
+                                <td>{{metric('forward stroke time').value}}</td>
+                                <td>{{metric('forward stroke time').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Stroke Time</td>
+                                <td>{{metric('total stroke time').value}}</td>
+                                <td>{{metric('total stroke time').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Tempo Ratio</td>
+                                <td>{{metric('tempo ratio').value}}</td>
+                                <td>{{metric('tempo ratio').storageUnits}}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Backstroke Length</td>
+                                <td>{{metric('backstroke length').value}}</td>
+                                <td>{{metric('backstroke length').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Forward Stroke Length</td>
+                                <td>{{metric('forward stroke length').value}}</td>
+                                <td>{{metric('forward stroke length').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Finish Stroke Length</td>
+                                <td>{{metric('finish stroke length').value}}</td>
+                                <td>{{metric('finish stroke length').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Length to Speed Ratio</td>
+                                <td>{{metric('length to speed ratio').value}}</td>
+                                <td>{{metric('length to speed ratio').storageUnits}}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Backstroke Speed</td>
+                                <td>{{metric('backstroke speed').value}}</td>
+                                <td>{{metric('backstroke speed').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Forward Stroke Speed</td>
+                                <td>{{metric('forward stroke speed').value}}</td>
+                                <td>{{metric('forward stroke speed').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Impact Stroke Speed</td>
+                                <td>{{metric('impact stroke speed').value}}</td>
+                                <td>{{metric('impact stroke speed').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Speed Ratio</td>
+                                <td>{{metric('speed ratio').value}}</td>
+                                <td>{{metric('speed ratio').storageUnits}}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Backstroke Rotation</td>
+                                <td>{{metric('backstroke rotation').value}}</td>
+                                <td>{{metric('backstroke rotation').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Forward Stroke Rotation</td>
+                                <td>{{metric('forward stroke rotation').value}}</td>
+                                <td>{{metric('forward stroke rotation').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Vertical Stroke Arc</td>
+                                <td>{{metric('vertical stroke arc').value}}</td>
+                                <td>{{metric('vertical stroke arc').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Horizontal Stroke Arc</td>
+                                <td>{{metric('horizontal stroke arc').value}}</td>
+                                <td>{{metric('horizontal stroke arc').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Face Angle to Path Impact</td>
+                                <td>{{metric('face angle to path impact').value}}</td>
+                                <td>{{metric('face angle to path impact').storageUnits}}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Face Angle Change</td>
+                                <td>{{metric('face angle change').value}}</td>
+                                <td>{{metric('face angle change').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Lie Angle Change</td>
+                                <td>{{metric('lie angle change').value}}</td>
+                                <td>{{metric('lie angle change').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Loft Angle Change</td>
+                                <td>{{metric('loft angle change').value}}</td>
+                                <td>{{metric('loft angle change').storageUnits}}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Face Angle Address</td>
+                                <td>{{metric('face angle address').value}}</td>
+                                <td>{{metric('face angle address').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Lie Angle Address</td>
+                                <td>{{metric('lie angle address').value}}</td>
+                                <td>{{metric('lie angle address').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Loft Angle Address</td>
+                                <td>{{metric('loft angle address').value}}</td>
+                                <td>{{metric('loft angle address').storageUnits}}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Face Angle Impact</td>
+                                <td>{{metric('face angle impact').value}}</td>
+                                <td>{{metric('face angle impact').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Lie Angle Impact</td>
+                                <td>{{metric('lie angle impact').value}}</td>
+                                <td>{{metric('lie angle impact').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Loft Angle Impact</td>
+                                <td>{{metric('loft angle impact').value}}</td>
+                                <td>{{metric('loft angle impact').storageUnits}}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>X Angle Velocity Impact</td>
+                                <td>{{metric('x angle velocity impact').value}}</td>
+                                <td>{{metric('x angle velocity impact').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Y Angle Velocity Impact</td>
+                                <td>{{metric('y angle velocity impact').value}}</td>
+                                <td>{{metric('y angle velocity impact').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Z Angle Velocity Impact</td>
+                                <td>{{metric('z angle velocity impact').value}}</td>
+                                <td>{{metric('z angle velocity impact').storageUnits}}</td>
+                            </tr>
+                            <tr>
+                                <td>Resultant Angle Velocity Impact</td>
+                                <td>{{metric('resultant angle velocity impact').value}}</td>
+                                <td>{{metric('resultant angle velocity impact').storageUnits}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <table ng-if="show_metrics" class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Value</th>
-                            <th>Units</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="divider">
-                            <td>File Name</td>
-                            <td colspan="2">{{file.name}}</td>
-                        </tr>
-                        <tr>
-                            <td>Starting Time</td>
-                            <td colspan="2">{{metric('starting time').value}}</td>
-                        </tr>
-                        <tr>
-                            <td>Ending Time</td>
-                            <td colspan="2">{{metric('ending time').value}}</td>
-                        </tr>
-                        <tr class="divider">
-                            <td>Backstroke Time</td>
-                            <td>{{metric('backstroke time').value}}</td>
-                            <td>{{metric('backstroke time').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Forward Stroke Time</td>
-                            <td>{{metric('forward stroke time').value}}</td>
-                            <td>{{metric('forward stroke time').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Total Stroke Time</td>
-                            <td>{{metric('total stroke time').value}}</td>
-                            <td>{{metric('total stroke time').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Tempo Ratio</td>
-                            <td>{{metric('tempo ratio').value}}</td>
-                            <td>{{metric('tempo ratio').storageUnits}}</td>
-                        </tr>
-                        <tr class="divider">
-                            <td>Backstroke Length</td>
-                            <td>{{metric('backstroke length').value}}</td>
-                            <td>{{metric('backstroke length').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Forward Stroke Length</td>
-                            <td>{{metric('forward stroke length').value}}</td>
-                            <td>{{metric('forward stroke length').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Finish Stroke Length</td>
-                            <td>{{metric('finish stroke length').value}}</td>
-                            <td>{{metric('finish stroke length').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Length to Speed Ratio</td>
-                            <td>{{metric('length to speed ratio').value}}</td>
-                            <td>{{metric('length to speed ratio').storageUnits}}</td>
-                        </tr>
-                        <tr class="divider">
-                            <td>Backstroke Speed</td>
-                            <td>{{metric('backstroke speed').value}}</td>
-                            <td>{{metric('backstroke speed').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Forward Stroke Speed</td>
-                            <td>{{metric('forward stroke speed').value}}</td>
-                            <td>{{metric('forward stroke speed').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Impact Stroke Speed</td>
-                            <td>{{metric('impact stroke speed').value}}</td>
-                            <td>{{metric('impact stroke speed').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Speed Ratio</td>
-                            <td>{{metric('speed ratio').value}}</td>
-                            <td>{{metric('speed ratio').storageUnits}}</td>
-                        </tr>
-                        <tr class="divider">
-                            <td>Backstroke Rotation</td>
-                            <td>{{metric('backstroke rotation').value}}</td>
-                            <td>{{metric('backstroke rotation').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Forward Stroke Rotation</td>
-                            <td>{{metric('forward stroke rotation').value}}</td>
-                            <td>{{metric('forward stroke rotation').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Vertical Stroke Arc</td>
-                            <td>{{metric('vertical stroke arc').value}}</td>
-                            <td>{{metric('vertical stroke arc').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Horizontal Stroke Arc</td>
-                            <td>{{metric('horizontal stroke arc').value}}</td>
-                            <td>{{metric('horizontal stroke arc').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Face Angle to Path Impact</td>
-                            <td>{{metric('face angle to path impact').value}}</td>
-                            <td>{{metric('face angle to path impact').storageUnits}}</td>
-                        </tr>
-                        <tr class="divider">
-                            <td>Face Angle Change</td>
-                            <td>{{metric('face angle change').value}}</td>
-                            <td>{{metric('face angle change').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Lie Angle Change</td>
-                            <td>{{metric('lie angle change').value}}</td>
-                            <td>{{metric('lie angle change').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Loft Angle Change</td>
-                            <td>{{metric('loft angle change').value}}</td>
-                            <td>{{metric('loft angle change').storageUnits}}</td>
-                        </tr>
-                        <tr class="divider">
-                            <td>Face Angle Address</td>
-                            <td>{{metric('face angle address').value}}</td>
-                            <td>{{metric('face angle address').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Lie Angle Address</td>
-                            <td>{{metric('lie angle address').value}}</td>
-                            <td>{{metric('lie angle address').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Loft Angle Address</td>
-                            <td>{{metric('loft angle address').value}}</td>
-                            <td>{{metric('loft angle address').storageUnits}}</td>
-                        </tr>
-                        <tr class="divider">
-                            <td>Face Angle Impact</td>
-                            <td>{{metric('face angle impact').value}}</td>
-                            <td>{{metric('face angle impact').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Lie Angle Impact</td>
-                            <td>{{metric('lie angle impact').value}}</td>
-                            <td>{{metric('lie angle impact').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Loft Angle Impact</td>
-                            <td>{{metric('loft angle impact').value}}</td>
-                            <td>{{metric('loft angle impact').storageUnits}}</td>
-                        </tr>
-                        <tr class="divider">
-                            <td>X Angle Velocity Impact</td>
-                            <td>{{metric('x angle velocity impact').value}}</td>
-                            <td>{{metric('x angle velocity impact').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Y Angle Velocity Impact</td>
-                            <td>{{metric('y angle velocity impact').value}}</td>
-                            <td>{{metric('y angle velocity impact').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Z Angle Velocity Impact</td>
-                            <td>{{metric('z angle velocity impact').value}}</td>
-                            <td>{{metric('z angle velocity impact').storageUnits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Resultant Angle Velocity Impact</td>
-                            <td>{{metric('resultant angle velocity impact').value}}</td>
-                            <td>{{metric('resultant angle velocity impact').storageUnits}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            </div>
+            <div class="col-lg-7">
+                <div id="plotly"></div>
             </div>
         </div>
-        <div id="plotly"></div>
-        
     </div>
-
 
 </body>
 </html>
