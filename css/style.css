@@ -15,9 +15,30 @@ body {
 }
 
 #main {
-	margin:2em;
+	margin: 2em;
 }
 
 #plotly {
 	height: 800px;
+}
+
+a.no-underline {
+    text-decoration: none;
+}
+
+tr.divider {
+    border-top: 3px solid gainsboro;
+}
+
+.panel-default>.panel-heading {
+    background-color: gray;
+    color: white;
+}
+
+.panel-default>.panel-heading a {
+    color: white;
+}
+
+.panel-default {
+    border-color: dimgray;
 }
