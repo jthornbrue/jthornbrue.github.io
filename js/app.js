@@ -51,52 +51,108 @@ angular.module("app", [])
         $scope.file = file;
         $scope.json = JSON.parse(result);
         $scope.metrics = [];
-        
+        $scope.valid = false;
+
         document.getElementById('plotly').innerHTML = '';
         
-        if ($scope.json.capture == undefined) {
-            $scope.valid = false;
-            return;
+        var gyr;
+        var acc;
+        var vel;
+        var pos;
+        var events;
+
+        if ($scope.json.SensorCalibratedData) {
+            // old JSON format
+            gyr = _.map($scope.json.SensorCalibratedData, function (sample) {
+                return {
+                    timestamp: sample.TimeStamp,
+                    x: sample.gX,
+                    y: sample.gY,
+                    z: sample.gZ
+                }
+            });
+
+            vel = _.map($scope.json.SensorIntegratedData, function (sample) {
+                return {
+                    timestamp: sample.TimeStamp,
+                    x: sample.vX,
+                    y: sample.vY,
+                    z: sample.vZ,
+                }
+            });
+
+            pos = _.map($scope.json.SensorIntegratedData, function (sample) {
+                return {
+                    timestamp: sample.TimeStamp,
+                    x: sample.pX,
+                    y: sample.pY,
+                    z: sample.pZ,
+                }
+            });
+
+
+        } else if ($scope.json.capture) {
+            // new JSON format
+
+            gyr = _.map($scope.json.capture.calibratedSensorData.samples, function (sample) {
+
+                var xyz = _.map(sample[2].split(','),  parseFloat);
+
+                return {
+                    timestamp: sample[0],
+                    x: xyz[0],
+                    y: xyz[1],
+                    z: xyz[2]
+                };
+            });
+
+            _.each($scope.json.capture.activities[0].actions[0].metricGroups, function (group) {
+                _.each(group.metrics, function (metric) {
+                    if (metric.type == 'clubhead velocity vector') {
+                        var dt = metric.samplingPeriod;
+                        var k = -1;
+                        vel = _.map(metric.values, function (value) {
+                            ++k;
+                            var xyz = _.map(value.split(','), parseFloat);
+
+                            return {
+                                timestamp: k * dt,
+                                x: xyz[0],
+                                y: xyz[1],
+                                z: xyz[2]
+                            };
+                        });
+                    } else if (metric.composition == 'scalar') {
+                        $scope.metrics.push(metric);
+                    }
+                });
+            });
+
+            if (vel) {
+                pos = [];
+                var sum = {
+                    'timestamp': _.first(vel).timestamp,
+                    'x': 0.0,
+                    'y': 0.0,
+                    'z': 0.0
+                };
+                _.each(vel, function (v) {
+                    var dt = v.timestamp - sum.timestamp;
+                    sum.timestamp = v.timestamp;
+                    sum.x += v.x * dt;
+                    sum.y += v.y * dt;
+                    sum.z += v.z * dt;
+                    pos.push(_.clone(sum));
+                });
+            }
+
+            events = $scope.json.capture.activities[0].actions[0].eventMarkers;
+        } else {
+            $log.warn('upload format not recognized');
         }
 
         $scope.valid = true;
 
-        var gyr = _.map($scope.json.capture.calibratedSensorData.samples, function (sample) {
-            
-            var xyz = _.map(sample[2].split(','),  parseFloat);
-                
-            return {
-                timestamp: sample[0],
-                x: xyz[0],
-                y: xyz[1],
-                z: xyz[2]
-            };
-        });
-        
-        var vel;
-        
-        _.each($scope.json.capture.activities[0].actions[0].metricGroups, function (group) {
-            _.each(group.metrics, function (metric) {
-                if (metric.type == 'clubhead velocity vector') {
-                    var dt = metric.samplingPeriod;
-                    var k = -1;
-                    vel = _.map(metric.values, function (value) {
-                        ++k;
-                        var xyz = _.map(value.split(','), parseFloat);
-                        
-                        return {
-                            timestamp: k * dt,
-                            x: xyz[0],
-                            y: xyz[1],
-                            z: xyz[2]
-                        };
-                    });
-                } else if (metric.composition == 'scalar') {
-                    $scope.metrics.push(metric);
-                }
-            });
-        });
-        
         var data = [];
         
         if (gyr) {
@@ -126,7 +182,7 @@ angular.module("app", [])
         }
         
         if (vel) {
-            var acc = _.map(_.zip(_.slice(vel, 0, vel.length - 1), _.slice(vel, 1)), function (pair) {
+            acc = _.map(_.zip(_.slice(vel, 0, vel.length - 1), _.slice(vel, 1)), function (pair) {
                 var v0 = _.first(pair);
                 var v1 = _.last(pair);
                 var dt = v1.timestamp - v0.timestamp;
@@ -137,23 +193,7 @@ angular.module("app", [])
                     'z': (v1.z - v0.z) / dt
                 };
             });
-            
-            var pos = [];
-            var sum = {
-                'timestamp': _.first(vel).timestamp,
-                'x': 0.0,
-                'y': 0.0,
-                'z': 0.0
-            };
-            _.each(vel, function (v) {
-                var dt = v.timestamp - sum.timestamp;
-                sum.timestamp = v.timestamp;
-                sum.x += v.x * dt;
-                sum.y += v.y * dt;
-                sum.z += v.z * dt;
-                pos.push(_.clone(sum));
-            });
-        
+
             data.push({
                 x: _.pluck(acc, 'timestamp'),
                 y: _.map(_.map(_.map(acc, 'x'), g), _.partial(limit, 10)),
@@ -161,7 +201,7 @@ angular.module("app", [])
                 type: 'scatter',
                 yaxis: 'y2'
             });
-            
+
             data.push({
                 x: _.pluck(vel, 'timestamp'),
                 y: _.map(_.pluck(vel, 'x'), mph),
@@ -169,7 +209,9 @@ angular.module("app", [])
                 type: 'scatter',
                 yaxis: 'y2'
             });
-            
+        }
+
+        if (pos) {
             data.push({
                 x: _.pluck(pos, 'timestamp'),
                 y: _.map(_.pluck(pos, 'x'), inches),
@@ -178,8 +220,6 @@ angular.module("app", [])
                 yaxis: 'y2'
             });
         }
-        
-        var events = $scope.json.capture.activities[0].actions[0].eventMarkers;
         
         var shapes = _.map(events, function (event) {
             return {
