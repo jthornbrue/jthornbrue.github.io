@@ -317,5 +317,24 @@ angular.module("app", [])
     };
 })
 
+.filter('mps_to_mph', function () {
+    return function (x) {
+        return x ? x * 2.23694 : '';
+    };
+})
+
+.filter('meters_to_inches', function () {
+    return function (x) {
+        console.log(x);
+        return x ? x * 39.3701 : '';
+    };
+})
+
+.filter('seconds_to_inches_per_mph', function () {
+    return function (x) {
+        return x? x * 63360 / 3600 : '';
+    };
+})
+
 ;
 

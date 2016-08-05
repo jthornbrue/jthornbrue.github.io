@@ -75,153 +75,153 @@
                             </tr>
                             <tr class="divider">
                                 <td>Backstroke Time</td>
-                                <td>{{metric('backstroke time').value}}</td>
+                                <td>{{metric('backstroke time').value | number:3}}</td>
                                 <td>{{metric('backstroke time').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Forward Stroke Time</td>
-                                <td>{{metric('forward stroke time').value}}</td>
+                                <td>{{metric('forward stroke time').value | number:3}}</td>
                                 <td>{{metric('forward stroke time').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Total Stroke Time</td>
-                                <td>{{metric('total stroke time').value}}</td>
+                                <td>{{metric('total stroke time').value | number:3}}</td>
                                 <td>{{metric('total stroke time').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Tempo Ratio</td>
-                                <td>{{metric('tempo ratio').value}}</td>
+                                <td>{{metric('tempo ratio').value | number:2}}</td>
                                 <td>{{metric('tempo ratio').storageUnits}}</td>
                             </tr>
                             <tr class="divider">
                                 <td>Backstroke Length</td>
-                                <td>{{metric('backstroke length').value}}</td>
-                                <td>{{metric('backstroke length').storageUnits}}</td>
+                                <td>{{metric('backstroke length').value | meters_to_inches | number:1}}</td>
+                                <td>inches</td>
                             </tr>
                             <tr>
                                 <td>Forward Stroke Length</td>
-                                <td>{{metric('forward stroke length').value}}</td>
-                                <td>{{metric('forward stroke length').storageUnits}}</td>
+                                <td>{{metric('forward stroke length').value | meters_to_inches | number:1}}</td>
+                                <td>inches</td>
                             </tr>
                             <tr>
                                 <td>Stroke Length Ratio</td>
-                                <td>{{metric('backstroke to forward stroke length ratio').value}}</td>
+                                <td>{{metric('backstroke to forward stroke length ratio').value | number:2}}</td>
                                 <td>{{metric('backstroke to forward stroke length ratio').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Forward Stroke Length to Impact Speed</td>
-                                <td>{{metric('forward stroke length to impact speed').value}}</td>
-                                <td>{{metric('forward stroke length to impact speed').storageUnits}}</td>
+                                <td>{{metric('forward stroke length to impact speed').value | seconds_to_inches_per_mph | number:2}}</td>
+                                <td>inches/mph</td>
                             </tr>
                             <tr class="divider">
                                 <td>Peak Backstroke Speed</td>
-                                <td>{{metric('peak backstroke speed').value}}</td>
-                                <td>{{metric('peak backstroke speed').storageUnits}}</td>
+                                <td>{{metric('peak backstroke speed').value | mps_to_mph | number:1}}</td>
+                                <td>mph</td>
                             </tr>
                             <tr>
                                 <td>Peak Forward Stroke Speed</td>
-                                <td>{{metric('peak forward stroke speed').value}}</td>
-                                <td>{{metric('peak forward stroke speed').storageUnits}}</td>
+                                <td>{{metric('peak forward stroke speed').value | mps_to_mph | number:1}}</td>
+                                <td>mph</td>
                             </tr>
                             <tr>
                                 <td>Impact Stroke Speed</td>
-                                <td>{{metric('stroke speed at impact').value}}</td>
-                                <td>{{metric('stroke speed at impact').storageUnits}}</td>
+                                <td>{{metric('stroke speed at impact').value | mps_to_mph | number:1}}</td>
+                                <td>mph</td>
                             </tr>
                             <tr>
                                 <td>Speed Ratio</td>
-                                <td>{{metric('backstroke to forward stroke speed ratio').value}}</td>
+                                <td>{{metric('backstroke to forward stroke speed ratio').value | number:2}}</td>
                                 <td>{{metric('backstroke to forward stroke speed ratio').storageUnits}}</td>
                             </tr>
                             <tr class="divider">
                                 <td>Backstroke Rotation</td>
-                                <td>{{metric('backstroke rotation').value}}</td>
+                                <td>{{metric('backstroke rotation').value | number:1}}</td>
                                 <td>{{metric('backstroke rotation').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Forward Stroke Rotation</td>
-                                <td>{{metric('forward stroke rotation').value}}</td>
+                                <td>{{metric('forward stroke rotation').value | number:1}}</td>
                                 <td>{{metric('forward stroke rotation').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Vertical Stroke Arc</td>
-                                <td>{{metric('vertical stroke arc').value}}</td>
+                                <td>{{metric('vertical stroke arc').value | number:1}}</td>
                                 <td>{{metric('vertical stroke arc').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Horizontal Stroke Arc</td>
-                                <td>{{metric('horizontal stroke arc').value}}</td>
+                                <td>{{metric('horizontal stroke arc').value | number:1}}</td>
                                 <td>{{metric('horizontal stroke arc').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Face Angle to Path Impact</td>
-                                <td>{{metric('face angle to path impact').value}}</td>
+                                <td>{{metric('face angle to path impact').value | number:1}}</td>
                                 <td>{{metric('face angle to path impact').storageUnits}}</td>
                             </tr>
                             <tr class="divider">
                                 <td>Face Angle Change</td>
-                                <td>{{metric('direction angle change').value}}</td>
+                                <td>{{metric('direction angle change').value | number:1}}</td>
                                 <td>{{metric('direction angle change').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Lie Angle Change</td>
-                                <td>{{metric('lie angle change').value}}</td>
+                                <td>{{metric('lie angle change').value | number:1}}</td>
                                 <td>{{metric('lie angle change').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Loft Angle Change</td>
-                                <td>{{metric('loft angle change').value}}</td>
+                                <td>{{metric('loft angle change').value | number:1}}</td>
                                 <td>{{metric('loft angle change').storageUnits}}</td>
                             </tr>
                             <tr class="divider">
                                 <td>Face Angle Address</td>
-                                <td>{{metric('face angle at address').value}}</td>
+                                <td>{{metric('face angle at address').value | number:1}}</td>
                                 <td>{{metric('face angle at address').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Lie Angle Address</td>
-                                <td>{{metric('lie angle at address').value}}</td>
+                                <td>{{metric('lie angle at address').value | number:1}}</td>
                                 <td>{{metric('lie angle at address').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Loft Angle Address</td>
-                                <td>{{metric('loft angle at address').value}}</td>
+                                <td>{{metric('loft angle at address').value | number:1}}</td>
                                 <td>{{metric('loft angle at address').storageUnits}}</td>
                             </tr>
                             <tr class="divider">
                                 <td>Face Angle Impact</td>
-                                <td>{{metric('face angle at impact').value}}</td>
+                                <td>{{metric('face angle at impact').value | number:1}}</td>
                                 <td>{{metric('face angle at impact').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Lie Angle Impact</td>
-                                <td>{{metric('lie angle at impact').value}}</td>
+                                <td>{{metric('lie angle at impact').value | number:1}}</td>
                                 <td>{{metric('lie angle at impact').storageUnits}}</td>
                             </tr>
                             <tr>
                                 <td>Loft Angle Impact</td>
-                                <td>{{metric('loft angle at impact').value}}</td>
+                                <td>{{metric('loft angle at impact').value | number:1}}</td>
                                 <td>{{metric('loft angle at impact').storageUnits}}</td>
                             </tr>
                             <tr class="divider">
-                                <td>X Angle Velocity Impact</td>
-                                <td>{{metric('x angle velocity impact').value}}</td>
-                                <td>{{metric('x angle velocity impact').storageUnits}}</td>
+                                <td>Y Angular Velocity Peak Negative</td>
+                                <td>{{metric('y angular velocity peak negative').value | number:1}}</td>
+                                <td>degrees/second</td>
                             </tr>
                             <tr>
-                                <td>Y Angle Velocity Impact</td>
-                                <td>{{metric('y angle velocity impact').value}}</td>
-                                <td>{{metric('y angle velocity impact').storageUnits}}</td>
+                                <td>Y Angular Velocity Peak Positive</td>
+                                <td>{{metric('y angular velocity peak positive').value | number:1}}</td>
+                                <td>degrees/second</td>
                             </tr>
                             <tr>
-                                <td>Z Angle Velocity Impact</td>
-                                <td>{{metric('z angle velocity impact').value}}</td>
-                                <td>{{metric('z angle velocity impact').storageUnits}}</td>
+                                <td>X Angular Velocity Impact</td>
+                                <td>{{metric('x angular velocity impact').value | number:1}}</td>
+                                <td>degrees/second</td>
                             </tr>
                             <tr>
-                                <td>Resultant Angle Velocity Impact</td>
-                                <td>{{metric('resultant angle velocity impact').value}}</td>
-                                <td>{{metric('resultant angle velocity impact').storageUnits}}</td>
+                                <td>Z Angular Velocity Impact</td>
+                                <td>{{metric('z angular velocity impact').value | number:1}}</td>
+                                <td>degrees/second</td>
                             </tr>
                         </tbody>
                     </table>
