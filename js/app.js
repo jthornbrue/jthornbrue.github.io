@@ -147,6 +147,56 @@ angular.module("app", [])
             }
 
             events = $scope.json.capture.activities[0].actions[0].eventMarkers;
+
+            var event_names = [
+                    'start of action',
+                    'end of action',
+                    'peak linear acceleration',
+                    'peak angular velocity',
+                    'peak angular acceleration',
+                    'start of data',
+                    'end of data',
+                    'impact',
+                    'start of downswing',
+                    'peak wrist snap',
+                    'peak speed',
+                    'take off',
+                    'landing',
+                    'start of backswing',
+                    'peak height',
+                    'start of backstroke',
+                    'start of forward stroke'
+                ];
+
+            _.map(events, function (event) {
+                event.name = event_names[event.eventType];
+            });
+
+            // TODO: calculate these metrics in the framework instead of here
+            var backstroke_to_forward_stroke_speed_ratio = _.findWhere($scope.metrics, {'type': 'backstroke to forward stroke speed ratio'});
+            if (backstroke_to_forward_stroke_speed_ratio) {
+                $scope.metrics.push({
+                    'type': 'forward stroke to backstroke speed ratio',
+                    'value': 1.0 / backstroke_to_forward_stroke_speed_ratio.value,
+                    'storageUnits': backstroke_to_forward_stroke_speed_ratio.storageUnits
+                });
+            }
+
+            var impact = _.findWhere(events, {'name': 'impact'})
+            var gyr_pre_impact = _.filter(gyr, function (it) { return it.timestamp <= impact.time; });
+
+            $scope.metrics.push({
+                'type': 'y angular velocity peak negative',
+                'value': _.min(_.pluck(gyr_pre_impact, 'y')),
+                'storageUnits': 'radians/sec'
+            });
+
+            $scope.metrics.push({
+                'type': 'y angular velocity peak positive',
+                'value': _.max(_.pluck(gyr_pre_impact, 'y')),
+                'storageUnits': 'radians/sec'
+            });
+
         } else {
             $log.warn('upload format not recognized');
         }
@@ -239,41 +289,16 @@ angular.module("app", [])
         var y = -1;
         
         var annotations = _.map(events, function (event) {
-            
             ++y;
-            
-            var names = [
-                'start of action',
-                'end of action',
-                'peak linear acceleration',
-                'peak angular velocity',
-                'peak angular acceleration',
-                'start of data',
-                'end of data',
-                'impact',
-                'start of downswing',
-                'peak wrist snap',
-                'peak speed',
-                'take off',
-                'landing',
-                'start of backswing',
-                'peak height',
-                'start of backstroke',
-                'start of forward stroke'
-            ];
-            
-            var name = names[event.eventType];
-            
             return {
                 'yref': 'paper',
                 'x': event.time,
                 'y': events.length == 1 ? 1 : y / (events.length - 1),
-                'text': name,
+                'text': event.name,
                 'showarrow': false,
                 'xanchor': 'left',
                 
             };
-            
         });
         
         var layout = {
@@ -311,6 +336,12 @@ angular.module("app", [])
     });
 })
 
+.filter('degrees', function () {
+    return function (rad) {
+        return rad * 180.0 / Math.PI;
+    };
+})
+
 .filter('timestamp', function () {
     return function (t) {
         return t ? moment.utc(t).format('YYYY-MM-DD HH:mm:ss[Z]') : '';
@@ -325,7 +356,6 @@ angular.module("app", [])
 
 .filter('meters_to_inches', function () {
     return function (x) {
-        console.log(x);
         return x ? x * 39.3701 : '';
     };
 })

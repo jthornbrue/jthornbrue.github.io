@@ -104,7 +104,7 @@
                                 <td>inches</td>
                             </tr>
                             <tr>
-                                <td>Stroke Length Ratio</td>
+                                <td>Backstroke to Forward Stroke Length</td>
                                 <td>{{metric('backstroke to forward stroke length ratio').value | number:2}}</td>
                                 <td>{{metric('backstroke to forward stroke length ratio').storageUnits}}</td>
                             </tr>
@@ -129,9 +129,9 @@
                                 <td>mph</td>
                             </tr>
                             <tr>
-                                <td>Speed Ratio</td>
-                                <td>{{metric('backstroke to forward stroke speed ratio').value | number:2}}</td>
-                                <td>{{metric('backstroke to forward stroke speed ratio').storageUnits}}</td>
+                                <td>Forward Stroke to Backstroke Speed</td>
+                                <td>{{metric('forward stroke to backstroke speed ratio').value | number:2}}</td>
+                                <td>{{metric('forward stroke backstroke speed ratio').storageUnits}}</td>
                             </tr>
                             <tr class="divider">
                                 <td>Backstroke Rotation</td>
@@ -205,12 +205,12 @@
                             </tr>
                             <tr class="divider">
                                 <td>Y Angular Velocity Peak Negative</td>
-                                <td>{{metric('y angular velocity peak negative').value | number:1}}</td>
+                                <td>{{metric('y angular velocity peak negative').value | degrees | number:1}}</td>
                                 <td>degrees/second</td>
                             </tr>
                             <tr>
                                 <td>Y Angular Velocity Peak Positive</td>
-                                <td>{{metric('y angular velocity peak positive').value | number:1}}</td>
+                                <td>{{metric('y angular velocity peak positive').value | degrees | number:1}}</td>
                                 <td>degrees/second</td>
                             </tr>
                             <tr>
