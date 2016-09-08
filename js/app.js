@@ -185,15 +185,35 @@ angular.module("app", [])
             var impact = _.findWhere(events, {'name': 'impact'})
             var gyr_pre_impact = _.filter(gyr, function (it) { return it.timestamp <= impact.time; });
 
+            var y_angular_velocity_peak_negative = _.min(_.pluck(gyr_pre_impact, 'y'));
             $scope.metrics.push({
                 'type': 'y angular velocity peak negative',
-                'value': _.min(_.pluck(gyr_pre_impact, 'y')),
+                'value': y_angular_velocity_peak_negative,
+                'storageUnits': 'radians/sec'
+            });
+
+            var y_angular_velocity_peak_positive =  _.max(_.pluck(gyr_pre_impact, 'y'));
+            $scope.metrics.push({
+                'type': 'y angular velocity peak positive',
+                'value': y_angular_velocity_peak_positive,
                 'storageUnits': 'radians/sec'
             });
 
             $scope.metrics.push({
-                'type': 'y angular velocity peak positive',
-                'value': _.max(_.pluck(gyr_pre_impact, 'y')),
+                'type': 'y angular velocity peak ratio',
+                'value': Math.abs(y_angular_velocity_peak_positive / y_angular_velocity_peak_negative),
+                'storageUnits': 'ratio'
+            });
+
+            $scope.metrics.push({
+                'type': 'x angular velocity impact',
+                'value': _.last(gyr_pre_impact).x,
+                'storageUnits': 'radians/sec'
+            });
+
+              $scope.metrics.push({
+                'type': 'z angular velocity impact',
+                'value': _.last(gyr_pre_impact).z,
                 'storageUnits': 'radians/sec'
             });
 

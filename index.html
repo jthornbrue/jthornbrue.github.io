@@ -100,13 +100,13 @@
                             </tr>
                             <tr>
                                 <td>Forward Stroke Length</td>
-                                <td>{{metric('forward stroke length').value | meters_to_inches | number:1}}</td>
-                                <td>inches</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Backstroke to Forward Stroke Length</td>
-                                <td>{{metric('backstroke to forward stroke length ratio').value | number:2}}</td>
-                                <td>{{metric('backstroke to forward stroke length ratio').storageUnits}}</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Forward Stroke Length to Impact Speed</td>
@@ -214,13 +214,18 @@
                                 <td>degrees/second</td>
                             </tr>
                             <tr>
+                                <td>Y Angular Velocity Peak Ratio</td>
+                                <td>{{metric('y angular velocity peak ratio').value | number:1}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
                                 <td>X Angular Velocity Impact</td>
-                                <td>{{metric('x angular velocity impact').value | number:1}}</td>
+                                <td>{{metric('x angular velocity impact').value | degrees | number:1}}</td>
                                 <td>degrees/second</td>
                             </tr>
                             <tr>
                                 <td>Z Angular Velocity Impact</td>
-                                <td>{{metric('z angular velocity impact').value | number:1}}</td>
+                                <td>{{metric('z angular velocity impact').value | degrees | number:1}}</td>
                                 <td>degrees/second</td>
                             </tr>
                         </tbody>
