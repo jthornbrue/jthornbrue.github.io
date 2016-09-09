@@ -207,7 +207,7 @@ angular.module("app", [])
 
             $scope.metrics.push({
                 'type': 'x angular velocity peak',
-                'value': _.max(_.map(_.pluck(gyr_pre_impact, 'y'), Math.abs)),
+                'value': _.max(_.map(_.pluck(gyr_pre_impact, 'x'), Math.abs)),
                 'storageUnits': 'radians/sec'
             });
 
