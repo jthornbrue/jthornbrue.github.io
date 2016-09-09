@@ -318,6 +318,17 @@ angular.module("app", [])
                 }
             };
         });
+
+        shapes.push({
+            'type': 'rect',
+            'xref': 'paper',
+            'x0': 0.0,
+            'y0': -2.0,
+            'x1': 1.0,
+            'y1': 2.0,
+            'line': {'width': 0.0},
+            'fillcolor': 'rgba(0, 0, 0, 0.1)',
+        });
         
         var y = -1;
         
