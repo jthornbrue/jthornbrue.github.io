@@ -183,7 +183,8 @@ angular.module("app", [])
             }
 
             var impact = _.findWhere(events, {'name': 'impact'})
-            var gyr_pre_impact = _.filter(gyr, function (it) { return it.timestamp <= impact.time; });
+            var start = _.findWhere(events, {'name': 'start of backstroke'})
+            var gyr_pre_impact = _.filter(gyr, function (it) { return it.timestamp >= start.time && it.timestamp <= impact.time; });
 
             var y_angular_velocity_peak_negative = _.min(_.pluck(gyr_pre_impact, 'y'));
             $scope.metrics.push({

@@ -44,7 +44,7 @@
     <div id=main>
         <p ng-if="!file" class="text-muted">Drag a JSON file anywhere on this page.</p>
         <div ng-show="!valid" class="alert alert-danger">
-            <i class="fa fa-exclamation-triangle"></i> <strong>Oh, snap!</strong> {{file.name}} isn't valid.</span>
+            <i class="fa fa-exclamation-triangle"></i> <strong>Oh, snap!</strong> {{file.name}} isn't valid.
         </div>
         <div class="row">
             <div class="col-lg-5">
@@ -58,48 +58,55 @@
                                 <th>Name</th>
                                 <th>Value</th>
                                 <th>Units</th>
+                                <th>Goal</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="divider" ng-if="detail_report">
                                 <td>File Name</td>
-                                <td colspan="2">{{file.name}}</td>
+                                <td colspan="3">{{file.name}}</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Starting Time</td>
-                                <td colspan="2">{{metric('starting time').value}}</td>
+                                <td colspan="3">{{metric('starting time').value}}</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Ending Time</td>
-                                <td colspan="2">{{metric('ending time').value}}</td>
+                                <td colspan="3">{{metric('ending time').value}}</td>
                             </tr>
                             <tr class="divider">
                                 <td>Backstroke Time</td>
                                 <td>{{metric('backstroke time').value | number:3}}</td>
-                                <td>{{metric('backstroke time').storageUnits}}</td>
+                                <td>sec</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Forward Stroke Time</td>
                                 <td>{{metric('forward stroke time').value | number:3}}</td>
-                                <td>{{metric('forward stroke time').storageUnits}}</td>
+                                <td>sec</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Total Stroke Time</td>
                                 <td>{{metric('total stroke time').value | number:3}}</td>
-                                <td>{{metric('total stroke time').storageUnits}}</td>
+                                <td>sec</td>
+                                <td></td>
                             </tr>
                             <tr class="bold">
                                 <td>Tempo Ratio</td>
                                 <td>{{metric('tempo ratio').value | number:2}}</td>
-                                <td>{{metric('tempo ratio').storageUnits}}</td>
+                                <td></td>
+                                <td>2.00</td>
                             </tr>
-                            <tr class="divider" ng-if="detail_report">
+                            <tr class="divider">
                                 <td>Backstroke Length</td>
                                 <td>{{metric('backstroke length').value | meters_to_inches | number:1}}</td>
-                                <td>inches</td>
+                                <td>in</td>
+                                <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Forward Stroke Length</td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -107,136 +114,163 @@
                                 <td>Backstroke to Forward Stroke Length</td>
                                 <td></td>
                                 <td></td>
-                            </tr>
-                            <tr ng-if="detail_report">
-                                <td>Forward Stroke Length to Impact Speed</td>
-                                <td>{{metric('forward stroke length to impact speed').value | seconds_to_inches_per_mph | number:2}}</td>
-                                <td>inches/mph</td>
-                            </tr>
-                            <tr class="divider">
-                                <td>Peak Backstroke Speed</td>
-                                <td>{{metric('peak backstroke speed').value | mps_to_mph | number:1}}</td>
-                                <td>mph</td>
-                            </tr>
-                            <tr>
-                                <td>Peak Forward Stroke Speed</td>
-                                <td>{{metric('peak forward stroke speed').value | mps_to_mph | number:1}}</td>
-                                <td>mph</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Impact Stroke Speed</td>
                                 <td>{{metric('stroke speed at impact').value | mps_to_mph | number:1}}</td>
                                 <td>mph</td>
+                                <td></td>
+                            </tr>
+                            <tr class="bold">
+                                <td>Backstroke Length to Impact Speed</td>
+                                <td>{{metric('forward stroke length to impact speed').value | seconds_to_inches_per_mph | number:2}}</td>
+                                <td>in/mph</td>
+                                <td>2.00</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Peak Backstroke Speed</td>
+                                <td>{{metric('peak backstroke speed').value | mps_to_mph | number:1}}</td>
+                                <td>mph</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Peak Forward Stroke Speed</td>
+                                <td>{{metric('peak forward stroke speed').value | mps_to_mph | number:1}}</td>
+                                <td>mph</td>
+                                <td></td>
                             </tr>
                             <tr class="bold">
                                 <td>Forward Stroke to Backstroke Speed</td>
                                 <td>{{metric('forward stroke to backstroke speed ratio').value | number:2}}</td>
-                                <td>{{metric('forward stroke backstroke speed ratio').storageUnits}}</td>
+                                <td></td>
+                                <td>2.00</td>
                             </tr>
                             <tr class="divider" ng-if="detail_report">
                                 <td>Backstroke Rotation</td>
                                 <td>{{metric('backstroke rotation').value | number:1}}</td>
                                 <td>{{metric('backstroke rotation').storageUnits}}</td>
+                                <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Forward Stroke Rotation</td>
                                 <td>{{metric('forward stroke rotation').value | number:1}}</td>
-                                <td>{{metric('forward stroke rotation').storageUnits}}</td>
+                                <td>deg</td>
+                                <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Vertical Stroke Arc</td>
                                 <td>{{metric('vertical stroke arc').value | number:1}}</td>
                                 <td>{{metric('vertical stroke arc').storageUnits}}</td>
+                                <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Horizontal Stroke Arc</td>
                                 <td>{{metric('horizontal stroke arc').value | number:1}}</td>
                                 <td>{{metric('horizontal stroke arc').storageUnits}}</td>
+                                <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Face Angle to Path Impact</td>
                                 <td>{{metric('face angle to path impact').value | number:1}}</td>
                                 <td>{{metric('face angle to path impact').storageUnits}}</td>
+                                <td></td>
                             </tr>
                             <tr class="divider">
                                 <td>Face Angle Change</td>
                                 <td>{{metric('direction angle change').value | number:1}}</td>
-                                <td>{{metric('direction angle change').storageUnits}}</td>
+                                <td>deg</td>
+                                <td>0.00</td>
                             </tr>
                             <tr>
                                 <td>Lie Angle Change</td>
                                 <td>{{metric('lie angle change').value | number:1}}</td>
-                                <td>{{metric('lie angle change').storageUnits}}</td>
+                                <td>deg</td>
+                                <td>0.00</td>
                             </tr>
                             <tr>
                                 <td>Loft Angle Change</td>
                                 <td>{{metric('loft angle change').value | number:1}}</td>
-                                <td>{{metric('loft angle change').storageUnits}}</td>
+                                <td>deg</td>
+                                <td>0.00</td>
                             </tr>
-                            <tr class="divider" ng-if="detail_report">
-                                <td>Face Angle Address</td>
-                                <td>{{metric('face angle at address').value | number:1}}</td>
-                                <td>{{metric('face angle at address').storageUnits}}</td>
-                            </tr>
+                            <!--<tr class="divider" ng-if="detail_report">-->
+                                <!--<td>Face Angle Address</td>-->
+                                <!--<td>{{metric('face angle at address').value | number:1}}</td>-->
+                                <!--<td>{{metric('face angle at address').storageUnits}}</td>-->
+                                <!--<td></td>-->
+                            <!--</tr>-->
                             <tr ng-if="detail_report">
                                 <td>Lie Angle Address</td>
                                 <td>{{metric('lie angle at address').value | number:1}}</td>
                                 <td>{{metric('lie angle at address').storageUnits}}</td>
+                                <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Loft Angle Address</td>
                                 <td>{{metric('loft angle at address').value | number:1}}</td>
                                 <td>{{metric('loft angle at address').storageUnits}}</td>
+                                <td></td>
                             </tr>
-                            <tr class="divider" ng-if="detail_report">
-                                <td>Face Angle Impact</td>
-                                <td>{{metric('face angle at impact').value | number:1}}</td>
-                                <td>{{metric('face angle at impact').storageUnits}}</td>
-                            </tr>
+                            <!--<tr class="divider" ng-if="detail_report">-->
+                                <!--<td>Face Angle Impact</td>-->
+                                <!--<td>{{metric('face angle at impact').value | number:1}}</td>-->
+                                <!--<td>{{metric('face angle at impact').storageUnits}}</td>-->
+                                <!--<td></td>-->
+                            <!--</tr>-->
                             <tr ng-if="detail_report">
                                 <td>Lie Angle Impact</td>
                                 <td>{{metric('lie angle at impact').value | number:1}}</td>
-                                <td>{{metric('lie angle at impact').storageUnits}}</td>
+                                <td>deg</td>
+                                <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Loft Angle Impact</td>
                                 <td>{{metric('loft angle at impact').value | number:1}}</td>
-                                <td>{{metric('loft angle at impact').storageUnits}}</td>
+                                <td>deg</td>
+                                <td></td>
                             </tr>
                             <tr class="divider">
                                 <td>Y Angular Velocity Peak Negative</td>
                                 <td>{{metric('y angular velocity peak negative').value | degrees | number:1}}</td>
-                                <td>degrees/second</td>
+                                <td>dps</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Y Angular Velocity Peak Positive</td>
                                 <td>{{metric('y angular velocity peak positive').value | degrees | number:1}}</td>
-                                <td>degrees/second</td>
+                                <td>dps</td>
+                                <td></td>
                             </tr>
                             <tr class="bold">
                                 <td>Y Angular Velocity Peak Ratio</td>
                                 <td>{{metric('y angular velocity peak ratio').value | number:1}}</td>
                                 <td></td>
+                                <td>2.00</td>
                             </tr>
-                            <tr>
+                            <tr class="divider">
                                 <td>X Angular Velocity Peak</td>
                                 <td>{{metric('x angular velocity peak').value | degrees | number:1}}</td>
-                                <td>degrees/second</td>
+                                <td>dps</td>
+                                <td>< 2</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>X Angular Velocity Impact</td>
                                 <td>{{metric('x angular velocity impact').value | degrees | number:1}}</td>
-                                <td>degrees/second</td>
+                                <td>dps</td>
+                                <td>< 2</td>
                             </tr>
                             <tr>
                                 <td>Z Angular Velocity Peak</td>
                                 <td>{{metric('z angular velocity peak').value | degrees | number:1}}</td>
-                                <td>degrees/second</td>
+                                <td>dps</td>
+                                <td>< 2</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Z Angular Velocity Impact</td>
                                 <td>{{metric('z angular velocity impact').value | degrees | number:1}}</td>
-                                <td>degrees/second</td>
+                                <td>dps</td>
+                                <td>< 2</td>
                             </tr>
                         </tbody>
                     </table>
