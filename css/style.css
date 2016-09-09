@@ -42,3 +42,7 @@ tr.divider {
 .panel-default {
     border-color: dimgray;
 }
+
+.bold {
+ font-weight: bold;
+}

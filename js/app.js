@@ -33,13 +33,13 @@ angular.module("app", [])
 
 .controller("main", function ($scope, $log, $http, $rootScope) {
 
-    $scope.show_metrics = true;
+    $scope.detail_report = false;
     $scope.obj = undefined;
     $scope.valid = true;
     $scope.metrics = undefined;
     
-    $scope.toggle_show_metrics = function () {
-        $scope.show_metrics = !$scope.show_metrics;
+    $scope.toggle_detail_report = function () {
+        $scope.detail_report = !$scope.detail_report;
     }
 
     $scope.metric = function (type) {
@@ -206,12 +206,24 @@ angular.module("app", [])
             });
 
             $scope.metrics.push({
+                'type': 'x angular velocity peak',
+                'value': _.max(_.map(_.pluck(gyr_pre_impact, 'y'), Math.abs)),
+                'storageUnits': 'radians/sec'
+            });
+
+            $scope.metrics.push({
                 'type': 'x angular velocity impact',
                 'value': _.last(gyr_pre_impact).x,
                 'storageUnits': 'radians/sec'
             });
 
-              $scope.metrics.push({
+            $scope.metrics.push({
+                'type': 'z angular velocity peak',
+                'value': _.max(_.map(_.pluck(gyr_pre_impact, 'z'), Math.abs)),
+                'storageUnits': 'radians/sec'
+            });
+
+            $scope.metrics.push({
                 'type': 'z angular velocity impact',
                 'value': _.last(gyr_pre_impact).z,
                 'storageUnits': 'radians/sec'
