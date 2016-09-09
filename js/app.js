@@ -323,9 +323,9 @@ angular.module("app", [])
             'type': 'rect',
             'xref': 'paper',
             'x0': 0.0,
-            'y0': -2.0,
+            'y0': -5.0,
             'x1': 1.0,
-            'y1': 2.0,
+            'y1': 5.0,
             'line': {'width': 0.0},
             'fillcolor': 'rgba(0, 0, 0, 0.1)',
         });
