@@ -94,14 +94,16 @@ angular.module("app", [])
         } else if ($scope.json.capture) {
             // new JSON format
 
+            var handedness = $scope.json.equipment.handedness == "right" ? 1 : -1;
+
             gyr = _.map($scope.json.capture.calibratedSensorData.samples, function (sample) {
 
                 var xyz = _.map(sample[2].split(','),  parseFloat);
 
                 return {
                     timestamp: sample[0],
-                    x: xyz[0],
-                    y: xyz[1],
+                    x: handedness * xyz[0],
+                    y: handedness * xyz[1],
                     z: xyz[2]
                 };
             });
