@@ -105,6 +105,18 @@
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
+                                <td>Ideal Backstroke Length</td>
+                                <td>{{metric('ideal backstroke length').value | meters_to_inches | number:1}}</td>
+                                <td>in</td>
+                                <td></td>
+                            </tr>
+                            <tr class="bold">
+                                <td>Backstroke Length Ratio</td>
+                                <td>{{metric('backstroke length ratio').value | number:2}}</td>
+                                <td></td>
+                                <td>1.0</td>
+                            </tr>
+                            <tr ng-if="detail_report">
                                 <td>Forward Stroke Length</td>
                                 <td></td>
                                 <td></td>
@@ -126,7 +138,7 @@
                                 <td>Backstroke Length to Impact Speed</td>
                                 <td>{{metric('forward stroke length to impact speed').value | seconds_to_inches_per_mph | number:2}}</td>
                                 <td>in/mph</td>
-                                <td>2.00</td>
+                                <td>2.50</td>
                             </tr>
                             <tr class="divider">
                                 <td>Peak Backstroke Speed</td>

@@ -232,6 +232,18 @@ angular.module("app", [])
                 'storageUnits': 'radians/sec'
             });
 
+            $scope.metrics.push({
+                'type': 'ideal backstroke length',
+                'value': $scope.metric('stroke speed at impact').value * 0.5 * $scope.metric('forward stroke time').value,
+                'storageUnits': 'meters'
+            });
+
+            $scope.metrics.push({
+                'type': 'backstroke length ratio',
+                'value': $scope.metric('backstroke length').value / $scope.metric('ideal backstroke length').value,
+                'storageUnits': 'meters'
+            });
+
         } else {
             $log.warn('upload format not recognized');
         }
