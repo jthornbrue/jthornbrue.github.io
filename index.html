@@ -76,19 +76,19 @@
                             </tr>
                             <tr class="divider">
                                 <td>Backstroke Time</td>
-                                <td>{{metric('backstroke time').value | number:3}}</td>
+                                <td>{{metric('backstroke time').value || metric('backswing time').value | number:3}}</td>
                                 <td>sec</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>Forward Stroke Time</td>
-                                <td>{{metric('forward stroke time').value | number:3}}</td>
+                                <td>{{metric('forward stroke time').value || metric('downswing time').value | number:3}}</td>
                                 <td>sec</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>Total Stroke Time</td>
-                                <td>{{metric('total stroke time').value | number:3}}</td>
+                                <td>{{metric('total stroke time').value || metric('total swing time').value | number:3}}</td>
                                 <td>sec</td>
                                 <td></td>
                             </tr>
