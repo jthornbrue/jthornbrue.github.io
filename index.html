@@ -170,6 +170,48 @@
                                 <td>deg</td>
                                 <td></td>
                             </tr>
+                            <tr class="divider">
+                                <td>Y Angular Velocity Peak Negative</td>
+                                <td>{{metric('y angular velocity peak negative').value | degrees | number:1}}</td>
+                                <td>dps</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Y Angular Velocity Peak Positive</td>
+                                <td>{{metric('y angular velocity peak positive').value | degrees | number:1}}</td>
+                                <td>dps</td>
+                                <td></td>
+                            </tr>
+                            <tr class="bold">
+                                <td>Y Angular Velocity Peak Ratio</td>
+                                <td>{{metric('y angular velocity peak ratio').value | number:1}}</td>
+                                <td></td>
+                                <td>2.00</td>
+                            </tr>
+                            <tr class="divider">
+                                <td>X Angular Velocity Peak</td>
+                                <td>{{metric('x angular velocity peak').value | degrees | number:1}}</td>
+                                <td>dps</td>
+                                <td>< 5</td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>X Angular Velocity Impact</td>
+                                <td>{{metric('x angular velocity impact').value | degrees | number:1}}</td>
+                                <td>dps</td>
+                                <td>< 5</td>
+                            </tr>
+                            <tr>
+                                <td>Z Angular Velocity Peak</td>
+                                <td>{{metric('z angular velocity peak').value | degrees | number:1}}</td>
+                                <td>dps</td>
+                                <td>< 5</td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Z Angular Velocity Impact</td>
+                                <td>{{metric('z angular velocity impact').value | degrees | number:1}}</td>
+                                <td>dps</td>
+                                <td>< 5</td>
+                            </tr>
                             <tr ng-if="detail_report">
                                 <td>Vertical Stroke Arc</td>
                                 <td>{{metric('vertical stroke arc').value | number:1}}</td>
@@ -241,48 +283,6 @@
                                 <td>{{metric('loft angle at impact').value | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
-                            </tr>
-                            <tr class="divider">
-                                <td>Y Angular Velocity Peak Negative</td>
-                                <td>{{metric('y angular velocity peak negative').value | degrees | number:1}}</td>
-                                <td>dps</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Y Angular Velocity Peak Positive</td>
-                                <td>{{metric('y angular velocity peak positive').value | degrees | number:1}}</td>
-                                <td>dps</td>
-                                <td></td>
-                            </tr>
-                            <tr class="bold">
-                                <td>Y Angular Velocity Peak Ratio</td>
-                                <td>{{metric('y angular velocity peak ratio').value | number:1}}</td>
-                                <td></td>
-                                <td>2.00</td>
-                            </tr>
-                            <tr class="divider">
-                                <td>X Angular Velocity Peak</td>
-                                <td>{{metric('x angular velocity peak').value | degrees | number:1}}</td>
-                                <td>dps</td>
-                                <td>< 5</td>
-                            </tr>
-                            <tr ng-if="detail_report">
-                                <td>X Angular Velocity Impact</td>
-                                <td>{{metric('x angular velocity impact').value | degrees | number:1}}</td>
-                                <td>dps</td>
-                                <td>< 5</td>
-                            </tr>
-                            <tr>
-                                <td>Z Angular Velocity Peak</td>
-                                <td>{{metric('z angular velocity peak').value | degrees | number:1}}</td>
-                                <td>dps</td>
-                                <td>< 5</td>
-                            </tr>
-                            <tr ng-if="detail_report">
-                                <td>Z Angular Velocity Impact</td>
-                                <td>{{metric('z angular velocity impact').value | degrees | number:1}}</td>
-                                <td>dps</td>
-                                <td>< 5</td>
                             </tr>
                         </tbody>
                     </table>
