@@ -245,9 +245,9 @@ angular.module("app", [])
             });
 
             $scope.metrics.push({
-                'type': 'backstroke rotation to length ratio',
-                'value': $scope.metric('backstroke rotation').value / $scope.metric('backstroke length').value / 39.3701,
-                'storageUnits': 'deg/inch'
+                'type': 'backstroke length to rotation ratio',
+                'value': $scope.metric('backstroke length').value / $scope.metric('backstroke rotation').value * 39.3701,
+                'storageUnits': 'inches/deg'
             });
 
         } else {
