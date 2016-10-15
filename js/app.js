@@ -244,6 +244,12 @@ angular.module("app", [])
                 'storageUnits': 'meters'
             });
 
+            $scope.metrics.push({
+                'type': 'backstroke rotation to length ratio',
+                'value': $scope.metric('backstroke rotation').value / $scope.metric('backstroke length').value / 39.3701,
+                'storageUnits': 'deg/inch'
+            });
+
         } else {
             $log.warn('upload format not recognized');
         }

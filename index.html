@@ -62,7 +62,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="divider" ng-if="detail_report">
+                            <tr class="divider">
                                 <td>File Name</td>
                                 <td colspan="3">{{file.name}}</td>
                             </tr>
@@ -161,7 +161,13 @@
                             <tr class="divider" ng-if="detail_report">
                                 <td>Backstroke Rotation</td>
                                 <td>{{metric('backstroke rotation').value | number:1}}</td>
-                                <td>{{metric('backstroke rotation').storageUnits}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Backstroke Rotation to Length Ratio</td>
+                                <td>{{metric('backstroke rotation to length ratio').value | number:2}}</td>
+                                <td>deg/inch</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
