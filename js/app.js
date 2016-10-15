@@ -246,7 +246,7 @@ angular.module("app", [])
 
             $scope.metrics.push({
                 'type': 'backstroke length to rotation ratio',
-                'value': $scope.metric('backstroke length').value / $scope.metric('backstroke rotation').value * 39.3701,
+                'value': Math.abs($scope.metric('backstroke length').value / $scope.metric('backstroke rotation').value * 39.3701),
                 'storageUnits': 'inches/deg'
             });
 
