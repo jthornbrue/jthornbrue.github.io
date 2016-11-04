@@ -130,24 +130,6 @@ angular.module("app", [])
                 });
             });
 
-            if (vel) {
-                pos = [];
-                var sum = {
-                    'timestamp': _.first(vel).timestamp,
-                    'x': 0.0,
-                    'y': 0.0,
-                    'z': 0.0
-                };
-                _.each(vel, function (v) {
-                    var dt = v.timestamp - sum.timestamp;
-                    sum.timestamp = v.timestamp;
-                    sum.x += v.x * dt;
-                    sum.y += v.y * dt;
-                    sum.z += v.z * dt;
-                    pos.push(_.clone(sum));
-                });
-            }
-
             events = $scope.json.capture.activities[0].actions[0].eventMarkers;
 
             var event_names = [
@@ -173,6 +155,57 @@ angular.module("app", [])
             _.map(events, function (event) {
                 event.name = event_names[event.eventType];
             });
+
+            if (vel) {
+                // apply dynamic calibration to velocity
+                var start = _.findWhere(events, {'name': 'start of backstroke'});
+                var transition = _.findWhere(events, {'name': 'start of forward stroke'});
+                var impact = _.findWhere(events, {'name': 'impact'});
+
+                // apply dynamic calibration to velocity
+                var dt = transition.time - start.time;
+                var x = -vel[transition.index].x / dt;
+                var y = -vel[transition.index].y / dt;
+                var z = -vel[transition.index].z / dt;
+                _.each(vel, function (v, k) {
+                    if (k >= start.index) {
+                        var dt = v.timestamp - start.time;
+                        v.x += x * dt;
+                        v.y += y * dt;
+                        v.z += z * dt;
+                    }
+                });
+
+                pos = [];
+                var sum = {
+                    'timestamp': _.first(vel).timestamp,
+                    'x': 0.0,
+                    'y': 0.0,
+                    'z': 0.0
+                };
+                _.each(vel, function (v, k) {
+                    var dt = v.timestamp - sum.timestamp;
+                    sum.timestamp = v.timestamp;
+                    sum.x += v.x * dt;
+                    sum.y += v.y * dt;
+                    sum.z += v.z * dt;
+                    pos.push(_.clone(sum));
+                });
+
+                // apply dynamic calibration to position
+                dt = impact.time - start.time;
+                x = (pos[start.index].x - pos[impact.index].x) / dt;
+                y = (pos[start.index].y - pos[impact.index].y) / dt;
+                z = (pos[start.index].z - pos[impact.index].z) / dt;
+                _.each(pos, function (p, k) {
+                    if (k >= start.index) {
+                        var dt = p.timestamp - start.time;
+                        p.x += x * dt;
+                        p.y += y * dt;
+                        p.z += z * dt;
+                    }
+                });
+            }
 
             // TODO: calculate these metrics in the framework instead of here
             var backstroke_to_forward_stroke_speed_ratio = _.findWhere($scope.metrics, {'type': 'backstroke to forward stroke speed ratio'});
@@ -297,10 +330,41 @@ angular.module("app", [])
                 };
             });
 
+            /* noisy acceleration
             data.push({
                 x: _.pluck(acc, 'timestamp'),
-                y: _.map(_.map(_.map(acc, 'x'), g), _.partial(limit, 10)),
-                name: 'acc (g)',
+                y: _.map(_.map(_.pluck(acc, 'x'), function (it) { return it * 2.23694; }), _.partial(limit, 20)),
+                name: 'acc (mph/s)',
+                type: 'scatter',
+                yaxis: 'y2'
+            });
+            */
+
+            // smooth acceleration
+            var impact = _.findWhere(events, {'name': 'impact'});
+            _.each(['x', 'y', 'z'], function (component) {
+                var alpha = Math.exp(-1 / 50);
+                var beta = 1.0 - alpha;
+
+                // forward filter
+                var forward = [];
+                var value = 0.0;
+                for (var index = 0; index < impact.index; ++index) {
+                    value = alpha * value + beta * acc[index][component];
+                    forward.push(value);
+                }
+                // backward filter
+                value = acc[impact.index - 1][component];
+                for (var index = impact.index - 1; index >= 0; --index) {
+                    value = alpha * value + beta * acc[index][component];
+                    acc[index][component] = 0.5 * (value + forward[index]);
+                }
+            });
+
+            data.push({
+                x: _.pluck(acc, 'timestamp'),
+                y: _.map(_.map(_.pluck(acc, 'x'), function (it) { return it * 2.23694; }), _.partial(limit, 20)),
+                name: 'acc (mph/s)',
                 type: 'scatter',
                 yaxis: 'y2'
             });
