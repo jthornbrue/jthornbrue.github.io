@@ -343,7 +343,7 @@ angular.module("app", [])
             // smooth acceleration
             var impact = _.findWhere(events, {'name': 'impact'});
             _.each(['x', 'y', 'z'], function (component) {
-                var alpha = Math.exp(-1 / 50);
+                var alpha = Math.exp(-1 / 10);
                 var beta = 1.0 - alpha;
 
                 // forward filter
@@ -354,7 +354,7 @@ angular.module("app", [])
                     forward.push(value);
                 }
                 // backward filter
-                value = acc[impact.index - 1][component];
+                value = _.sum(_.pluck(_.slice(acc, impact.index - 5, impact.index))) / 5;
                 for (var index = impact.index - 1; index >= 0; --index) {
                     value = alpha * value + beta * acc[index][component];
                     acc[index][component] = 0.5 * (value + forward[index]);
