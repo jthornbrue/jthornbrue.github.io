@@ -161,8 +161,6 @@ angular.module("app", [])
                 var start = _.findWhere(events, {'name': 'start of backstroke'});
                 var transition = _.findWhere(events, {'name': 'start of forward stroke'});
                 var impact = _.findWhere(events, {'name': 'impact'});
-
-                // apply dynamic calibration to velocity
                 var dt = transition.time - start.time;
                 var x = -vel[transition.index].x / dt;
                 var y = -vel[transition.index].y / dt;
@@ -176,6 +174,7 @@ angular.module("app", [])
                     }
                 });
 
+                // integrate velocity to get position
                 pos = [];
                 var sum = {
                     'timestamp': _.first(vel).timestamp,
@@ -205,83 +204,87 @@ angular.module("app", [])
                         p.z += z * dt;
                     }
                 });
-            }
 
-            // TODO: calculate these metrics in the framework instead of here
-            var backstroke_to_forward_stroke_speed_ratio = _.findWhere($scope.metrics, {'type': 'backstroke to forward stroke speed ratio'});
-            if (backstroke_to_forward_stroke_speed_ratio) {
+                // TODO: calculate these metrics in the framework instead of here
+                var backstroke_to_forward_stroke_speed_ratio = _.findWhere($scope.metrics, {'type': 'backstroke to forward stroke speed ratio'});
+                if (backstroke_to_forward_stroke_speed_ratio) {
+                    $scope.metrics.push({
+                        'type': 'forward stroke to backstroke speed ratio',
+                        'value': 1.0 / backstroke_to_forward_stroke_speed_ratio.value,
+                        'storageUnits': backstroke_to_forward_stroke_speed_ratio.storageUnits
+                    });
+                }
+
+                var impact = _.findWhere(events, {'name': 'impact'})
+                var start = _.findWhere(events, {'name': 'start of backstroke'}) || _.findWhere(events, {'name': 'start of backswing'})
+                var gyr_pre_impact = _.filter(gyr, function (it) { return it.timestamp >= start.time && it.timestamp <= impact.time; });
+
+                var y_angular_velocity_peak_negative = _.min(_.pluck(gyr_pre_impact, 'y'));
                 $scope.metrics.push({
-                    'type': 'forward stroke to backstroke speed ratio',
-                    'value': 1.0 / backstroke_to_forward_stroke_speed_ratio.value,
-                    'storageUnits': backstroke_to_forward_stroke_speed_ratio.storageUnits
+                    'type': 'y angular velocity peak negative',
+                    'value': y_angular_velocity_peak_negative,
+                    'storageUnits': 'radians/sec'
                 });
+
+                var y_angular_velocity_peak_positive =  _.max(_.pluck(gyr_pre_impact, 'y'));
+                $scope.metrics.push({
+                    'type': 'y angular velocity peak positive',
+                    'value': y_angular_velocity_peak_positive,
+                    'storageUnits': 'radians/sec'
+                });
+
+                $scope.metrics.push({
+                    'type': 'y angular velocity peak ratio',
+                    'value': Math.abs(y_angular_velocity_peak_positive / y_angular_velocity_peak_negative),
+                    'storageUnits': 'ratio'
+                });
+
+                $scope.metrics.push({
+                    'type': 'x angular velocity peak',
+                    'value': _.max(_.map(_.pluck(gyr_pre_impact, 'x'), Math.abs)),
+                    'storageUnits': 'radians/sec'
+                });
+
+                $scope.metrics.push({
+                    'type': 'x angular velocity impact',
+                    'value': _.last(gyr_pre_impact).x,
+                    'storageUnits': 'radians/sec'
+                });
+
+                $scope.metrics.push({
+                    'type': 'z angular velocity peak',
+                    'value': _.max(_.map(_.pluck(gyr_pre_impact, 'z'), Math.abs)),
+                    'storageUnits': 'radians/sec'
+                });
+
+                $scope.metrics.push({
+                    'type': 'z angular velocity impact',
+                    'value': _.last(gyr_pre_impact).z,
+                    'storageUnits': 'radians/sec'
+                });
+
+                $scope.metrics.push({
+                    'type': 'ideal backstroke length',
+                    'value': $scope.metric('stroke speed at impact').value * 0.5 * $scope.metric('forward stroke time').value,
+                    'storageUnits': 'meters'
+                });
+
+                $scope.metrics.push({
+                    'type': 'backstroke length ratio',
+                    'value': $scope.metric('backstroke length').value / $scope.metric('ideal backstroke length').value,
+                    'storageUnits': 'meters'
+                });
+
+                $scope.metrics.push({
+                    'type': 'backstroke length to rotation ratio',
+                    'value': Math.abs($scope.metric('backstroke length').value / $scope.metric('backstroke rotation').value * 39.3701),
+                    'storageUnits': 'inches/deg'
+                });
+
+                // FIXME fixes a bug in the framework (remove this as soon as that bug is fixed)
+                var metric = _.findWhere($scope.metrics, {'type': 'peak backstroke speed'});
+                metric.value = _.max(_.map(_.slice(vel, start.index, transition.index), function (v) { return Math.abs(v.x); }));
             }
-
-            var impact = _.findWhere(events, {'name': 'impact'})
-            var start = _.findWhere(events, {'name': 'start of backstroke'}) || _.findWhere(events, {'name': 'start of backswing'})
-            var gyr_pre_impact = _.filter(gyr, function (it) { return it.timestamp >= start.time && it.timestamp <= impact.time; });
-
-            var y_angular_velocity_peak_negative = _.min(_.pluck(gyr_pre_impact, 'y'));
-            $scope.metrics.push({
-                'type': 'y angular velocity peak negative',
-                'value': y_angular_velocity_peak_negative,
-                'storageUnits': 'radians/sec'
-            });
-
-            var y_angular_velocity_peak_positive =  _.max(_.pluck(gyr_pre_impact, 'y'));
-            $scope.metrics.push({
-                'type': 'y angular velocity peak positive',
-                'value': y_angular_velocity_peak_positive,
-                'storageUnits': 'radians/sec'
-            });
-
-            $scope.metrics.push({
-                'type': 'y angular velocity peak ratio',
-                'value': Math.abs(y_angular_velocity_peak_positive / y_angular_velocity_peak_negative),
-                'storageUnits': 'ratio'
-            });
-
-            $scope.metrics.push({
-                'type': 'x angular velocity peak',
-                'value': _.max(_.map(_.pluck(gyr_pre_impact, 'x'), Math.abs)),
-                'storageUnits': 'radians/sec'
-            });
-
-            $scope.metrics.push({
-                'type': 'x angular velocity impact',
-                'value': _.last(gyr_pre_impact).x,
-                'storageUnits': 'radians/sec'
-            });
-
-            $scope.metrics.push({
-                'type': 'z angular velocity peak',
-                'value': _.max(_.map(_.pluck(gyr_pre_impact, 'z'), Math.abs)),
-                'storageUnits': 'radians/sec'
-            });
-
-            $scope.metrics.push({
-                'type': 'z angular velocity impact',
-                'value': _.last(gyr_pre_impact).z,
-                'storageUnits': 'radians/sec'
-            });
-
-            $scope.metrics.push({
-                'type': 'ideal backstroke length',
-                'value': $scope.metric('stroke speed at impact').value * 0.5 * $scope.metric('forward stroke time').value,
-                'storageUnits': 'meters'
-            });
-
-            $scope.metrics.push({
-                'type': 'backstroke length ratio',
-                'value': $scope.metric('backstroke length').value / $scope.metric('ideal backstroke length').value,
-                'storageUnits': 'meters'
-            });
-
-            $scope.metrics.push({
-                'type': 'backstroke length to rotation ratio',
-                'value': Math.abs($scope.metric('backstroke length').value / $scope.metric('backstroke rotation').value * 39.3701),
-                'storageUnits': 'inches/deg'
-            });
 
         } else {
             $log.warn('upload format not recognized');
