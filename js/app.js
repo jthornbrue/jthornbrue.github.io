@@ -282,8 +282,11 @@ angular.module("app", [])
                 });
 
                 // FIXME fixes a bug in the framework (remove this as soon as that bug is fixed)
-                var metric = _.findWhere($scope.metrics, {'type': 'peak backstroke speed'});
-                metric.value = _.max(_.map(_.slice(vel, start.index, transition.index), function (v) { return Math.abs(v.x); }));
+                var peak_backstroke_speed = _.findWhere($scope.metrics, {'type': 'peak backstroke speed'});
+                peak_backstroke_speed.value = _.max(_.map(_.slice(vel, start.index, transition.index), function (v) { return Math.abs(v.x); }));
+                var peak_forward_stroke_speed = _.findWhere($scope.metrics, {'type': 'peak forward stroke speed'});
+                var back_to_forward_stroke_speed = _.findWhere($scope.metrics, {'type': 'backstroke to forward stroke speed ratio'});
+                backstroke_to_forward_stroke_speed_ratio.value = peak_backstroke_speed.value / peak_forward_stroke_speed.value;
             }
 
         } else {
