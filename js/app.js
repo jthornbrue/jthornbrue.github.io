@@ -206,14 +206,6 @@ angular.module("app", [])
                 });
 
                 // TODO: calculate these metrics in the framework instead of here
-                var backstroke_to_forward_stroke_speed_ratio = _.findWhere($scope.metrics, {'type': 'backstroke to forward stroke speed ratio'});
-                if (backstroke_to_forward_stroke_speed_ratio) {
-                    $scope.metrics.push({
-                        'type': 'forward stroke to backstroke speed ratio',
-                        'value': 1.0 / backstroke_to_forward_stroke_speed_ratio.value,
-                        'storageUnits': backstroke_to_forward_stroke_speed_ratio.storageUnits
-                    });
-                }
 
                 var impact = _.findWhere(events, {'name': 'impact'})
                 var start = _.findWhere(events, {'name': 'start of backstroke'}) || _.findWhere(events, {'name': 'start of backswing'})
@@ -286,7 +278,16 @@ angular.module("app", [])
                 peak_backstroke_speed.value = _.max(_.map(_.slice(vel, start.index, transition.index), function (v) { return Math.abs(v.x); }));
                 var peak_forward_stroke_speed = _.findWhere($scope.metrics, {'type': 'peak forward stroke speed'});
                 var back_to_forward_stroke_speed = _.findWhere($scope.metrics, {'type': 'backstroke to forward stroke speed ratio'});
-                backstroke_to_forward_stroke_speed_ratio.value = peak_backstroke_speed.value / peak_forward_stroke_speed.value;
+
+                var backstroke_to_forward_stroke_speed_ratio = _.findWhere($scope.metrics, {'type': 'backstroke to forward stroke speed ratio'});
+                if (backstroke_to_forward_stroke_speed_ratio) {
+                    backstroke_to_forward_stroke_speed_ratio.value = peak_backstroke_speed.value / peak_forward_stroke_speed.value;
+                    $scope.metrics.push({
+                        'type': 'forward stroke to backstroke speed ratio',
+                        'value': peak_forward_stroke_speed.value / peak_backstroke_speed.value,
+                        'storageUnits': backstroke_to_forward_stroke_speed_ratio.storageUnits
+                    });
+                }
             }
 
         } else {
