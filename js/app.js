@@ -256,18 +256,6 @@ angular.module("app", [])
                 });
 
                 $scope.metrics.push({
-                    'type': 'ideal backstroke length',
-                    'value': $scope.metric('stroke speed at impact').value * 0.5 * $scope.metric('forward stroke time').value,
-                    'storageUnits': 'meters'
-                });
-
-                $scope.metrics.push({
-                    'type': 'backstroke length ratio',
-                    'value': $scope.metric('backstroke length').value / $scope.metric('ideal backstroke length').value,
-                    'storageUnits': 'meters'
-                });
-
-                $scope.metrics.push({
                     'type': 'backstroke length to rotation ratio',
                     'value': Math.abs($scope.metric('backstroke length').value / $scope.metric('backstroke rotation').value * 39.3701),
                     'storageUnits': 'inches/deg'
@@ -288,6 +276,12 @@ angular.module("app", [])
                         'storageUnits': backstroke_to_forward_stroke_speed_ratio.storageUnits
                     });
                 }
+
+                $scope.metrics.push({
+                    'type': 'efficiency',
+                    'value': $scope.metric('backstroke length').value / ($scope.metric('stroke speed at impact').value * $scope.metric('forward stroke time').value),
+                    'storageUnits': 'ratio'
+                });
             }
 
         } else {
