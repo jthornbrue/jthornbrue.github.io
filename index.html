@@ -42,7 +42,7 @@
     </nav>
     
     <div id=main>
-        <p ng-if="actions.length == 0" class="text-muted">Drag a JSON file anywhere on this page.</p>
+        <p ng-if="!action" class="text-muted">Drag one or more JSON files anywhere on this page.</p>
         <div ng-repeat="action in actions" ng-if="!action.valid" class="alert alert-danger">
             <i class="fa fa-exclamation-triangle"></i> <strong>Oh, snap!</strong> {{action.file.name}} isn't valid.
         </div>
@@ -56,14 +56,20 @@
                         <thead>
                             <tr>
                                 <th>Metric</th>
-                                <th ng-repeat="action in actions">
-                                    <a href="" ng-click="show(action)">{{action.file.name | replace : '.json' }}</a>
+                                <th ng-repeat="_action in actions">
+                                    <a href="" ng-click="show(_action)" class="normal no-underline" ng-class="action == _action ? 'text-primary' : 'text-muted'">{{_action.file.name | replace : '.json' }}</a>
                                 </th>
                                 <th>Units</th>
                                 <th>Goal</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <tr ng-if="detail_report">
+                                <td></td>
+                                <td ng-repeat="action in actions"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                             <tr ng-if="detail_report">
                                 <td>Starting Time</td>
                                 <td ng-repeat="action in actions">{{action.metric('starting time')}}</td>
@@ -116,13 +122,13 @@
                                 <td>Backstroke Length to Impact Speed</td>
                                 <td ng-repeat="action in actions">{{action.metric('forward stroke length to impact speed') | seconds_to_inches_per_mph | number:2}}</td>
                                 <td>in/mph</td>
-                                <td>2.64 to 3.38</td>
+                                <td>2.64-3.38</td>
                             </tr>
                             <tr class="bold">
                                 <td>Efficiency (D/RT)</td>
                                 <td ng-repeat="action in actions">{{action.metric('efficiency') | number:2}}</td>
                                 <td></td>
-                                <td>0.5 to 0.64</td>
+                                <td>0.5-0.64</td>
                             </tr>
                             <tr class="divider">
                                 <td>Peak Backstroke Speed</td>
@@ -267,6 +273,9 @@
                 </div>
             </div>
             <div class="col-lg-7">
+                <div ng-if="actions.length > 1">
+                    <a class="btn btn-default btn-sm" ng-class="{'active': normalize_graphs}" ng-click="toggle_normalize_graphs()">Normalize Graphs</a>
+                </div>
                 <div id="plotly"></div>
             </div>
         </div>

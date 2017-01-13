@@ -167,7 +167,7 @@ function Action(file, json) {
                 }
             });
 
-            // smooth acceleration
+            // differentiate velocity to get linear acceleration
             this.acc = _.map(_.zip(_.slice(this.vel, 0, this.vel.length - 1), _.slice(this.vel, 1)), function (pair) {
                 var v0 = _.first(pair);
                 var v1 = _.last(pair);
@@ -199,6 +199,13 @@ function Action(file, json) {
                     value = alpha * value + beta * self.acc[index][component];
                     self.acc[index][component] = 0.5 * (value + forward[index]);
                 }
+
+                // limit the acceleration magnitude after impact
+                _.each(self.acc, function (it) {
+                    if (it.timestamp > impact.time) {
+                        it[component] = limit(0.5 * 9.81, it[component]);
+                    }
+                });
             });
 
             // integrate velocity to get position
@@ -323,24 +330,41 @@ angular.module("app", [])
     $scope.detail_report = false;
     $scope.actions = [];
     $scope.action = null;
+    $scope.normalize_graphs = false;
 
     $scope.toggle_detail_report = function () {
         $scope.detail_report = !$scope.detail_report;
-    }
+    };
+
+    $scope.toggle_normalize_graphs = function () {
+        $scope.normalize_graphs = !$scope.normalize_graphs;
+        $scope.show();
+    };
+
+    $scope.trash = function (action) {
+        _.pull($scope.actions, action);
+        $scope.show($scope.action == action ? _.first($scope.actions) : $scope.action);
+    };
 
     $scope.show = function (action) {
         $scope.action = action || $scope.action;
 
         document.getElementById('plotly').innerHTML = '';
 
+        if ($scope.actions.length == 0) {
+            return;
+        }
+
         var data = [];
 
         _.each($scope.actions, function (action) {
 
             if (action.gyr) {
+                var normalize = $scope.normalize_graphs ? $scope.action.metric('y angular velocity peak positive') / action.metric('y angular velocity peak positive') : 1.0;
+
                 data.push({
                     x: _.pluck(action.gyr, 'timestamp'),
-                    y: _.map(_.pluck(action.gyr, 'x'), degrees),
+                    y: _.map(action.gyr, function (it) { return degrees(it.x) * normalize; }),
                     name: 'gyro x',
                     legendgroup: 'gyro x',
                     showlegend: action == $scope.action,
@@ -354,7 +378,7 @@ angular.module("app", [])
 
                 data.push({
                     x: _.pluck(action.gyr, 'timestamp'),
-                    y: _.map(_.pluck(action.gyr, 'y'), degrees),
+                    y: _.map(action.gyr, function (it) { return degrees(it.y) * normalize; }),
                     name: 'gyro y',
                     legendgroup: 'gyro y',
                     showlegend: action == $scope.action,
@@ -368,7 +392,7 @@ angular.module("app", [])
 
                 data.push({
                     x: _.pluck(action.gyr, 'timestamp'),
-                    y: _.map(_.pluck(action.gyr, 'z'), degrees),
+                    y: _.map(action.gyr, function (it) { return degrees(it.z) * normalize; }),
                     name: 'gyro z',
                     legendgroup: 'gyro z',
                     showlegend: action == $scope.action,
@@ -381,10 +405,12 @@ angular.module("app", [])
                 });
             }
 
+            var normalize = $scope.normalize_graphs ? $scope.action.metric('peak forward stroke speed') / action.metric('peak forward stroke speed') : 1.0;
+
             if (action.acc) {
                 data.push({
                     x: _.pluck(action.acc, 'timestamp'),
-                    y: _.map(_.map(_.pluck(action.acc, 'x'), function (it) { return it * 2.23694; }), _.partial(limit, 20)),
+                    y: _.map(action.acc, function (it) { return it.x * 2.23694 * normalize; }),
                     name: 'acc (mph/s)',
                     legendgroup: 'acc',
                     showlegend: action == $scope.action,
@@ -401,7 +427,7 @@ angular.module("app", [])
             if (action.vel) {
                 data.push({
                     x: _.pluck(action.vel, 'timestamp'),
-                    y: _.map(_.pluck(action.vel, 'x'), mph),
+                    y: _.map(action.vel, function (it) { return mph(it.x) * normalize; }),
                     name: 'speed (mph)',
                     legendgroup: 'speed',
                     showlegend: action == $scope.action,
@@ -418,7 +444,7 @@ angular.module("app", [])
             if (action.pos) {
                 data.push({
                     x: _.pluck(action.pos, 'timestamp'),
-                    y: _.map(_.pluck(action.pos, 'x'), inches),
+                    y: _.map(action.pos, function (it) { return inches(it.x) * normalize; }),
                     name: 'position (in)',
                     legendgroup: 'position',
                     showlegend: action == $scope.action,
@@ -483,7 +509,7 @@ angular.module("app", [])
                 title: 'deg/s'
             },
             yaxis2: {
-                domain: [0, 0.46]
+                domain: [0, 0.46],
             },
             xaxis: {
                 anchor: 'y2',

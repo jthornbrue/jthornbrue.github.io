@@ -44,6 +44,9 @@ tr.divider {
 }
 
 .bold {
- font-weight: bold;
+    font-weight: bold;
 }
 
+.normal {
+    font-weight: normal;
+}
