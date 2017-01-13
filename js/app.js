@@ -478,9 +478,20 @@ angular.module("app", [])
 //        });
 
         var layout = {
-            yaxis: {domain: [0.54, 1], title: 'deg/s'},
-            yaxis2: {domain: [0, 0.46]},
-            xaxis: {anchor: 'y2'},
+            yaxis: {
+                domain: [0.54, 1],
+                title: 'deg/s'
+            },
+            yaxis2: {
+                domain: [0, 0.46]
+            },
+            xaxis: {
+                anchor: 'y2',
+                range: [
+                    _.min(_.map($scope.actions, function (action) { return action.event('start of backstroke').time; })) - 0.1,
+                    _.max(_.map($scope.actions, function (action) { return action.event('impact').time; }))
+                ]
+            },
             shapes: shapes,
             // annotations: annotations
         };
