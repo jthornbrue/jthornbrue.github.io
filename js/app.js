@@ -434,7 +434,7 @@ angular.module("app", [])
                     type: 'scatter',
                     yaxis: 'y2',
                     line: {
-                        color: 'darkgoldenrod',
+                        color: 'darkblue',
                         width: action == $scope.action ? 2 : 1
                     }
 
