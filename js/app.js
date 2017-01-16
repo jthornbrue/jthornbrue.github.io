@@ -291,7 +291,7 @@ function Action(file, json) {
 
             this.metrics.push({
                 'type': 'backstroke length to rotation ratio',
-                'value': Math.abs(this.metric('backstroke length').value / this.metric('backstroke rotation').value * 39.3701),
+                'value': Math.abs(this.metric('backstroke length') / this.metric('backstroke rotation') * 39.3701),
                 'storageUnits': 'inches/deg'
             });
 
