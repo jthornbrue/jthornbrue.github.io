@@ -100,7 +100,7 @@
                                 <td>sec</td>
                                 <td></td>
                             </tr>
-                            <tr class="bold">
+                            <tr class="bold info">
                                 <td>Tempo Ratio</td>
                                 <td ng-repeat="action in actions">{{action.metric('tempo ratio') | number:2}}</td>
                                 <td></td>
@@ -118,13 +118,13 @@
                                 <td>mph</td>
                                 <td></td>
                             </tr>
-                            <tr class="bold">
+                            <tr class="bold info">
                                 <td>Backstroke Length to Impact Speed</td>
                                 <td ng-repeat="action in actions">{{action.metric('forward stroke length to impact speed') | seconds_to_inches_per_mph | number:2}}</td>
                                 <td>in/mph</td>
                                 <td>2.64-3.38</td>
                             </tr>
-                            <tr class="bold">
+                            <tr class="bold info">
                                 <td>Efficiency (D/RT)</td>
                                 <td ng-repeat="action in actions">{{action.metric('efficiency') | number:2}}</td>
                                 <td></td>
@@ -142,7 +142,7 @@
                                 <td>mph</td>
                                 <td></td>
                             </tr>
-                            <tr class="bold">
+                            <tr class="bold info">
                                 <td>Forward Stroke to Backstroke Speed</td>
                                 <td ng-repeat="action in actions">{{action.metric('forward stroke to backstroke speed ratio') | number:2}}</td>
                                 <td></td>
@@ -154,7 +154,7 @@
                                 <td>deg</td>
                                 <td></td>
                             </tr>
-                            <tr>
+                            <tr class="bold info">
                                 <td>Backstroke Length to Rotation Ratio</td>
                                 <td ng-repeat="action in actions">{{action.metric('backstroke length to rotation ratio') | number:1}}</td>
                                 <td>inches/deg</td>
@@ -178,7 +178,7 @@
                                 <td>dps</td>
                                 <td></td>
                             </tr>
-                            <tr class="bold">
+                            <tr class="bold info">
                                 <td>Y Angular Velocity Peak Ratio</td>
                                 <td ng-repeat="action in actions">{{action.metric('y angular velocity peak ratio') | number:1}}</td>
                                 <td></td>
