@@ -30,6 +30,7 @@ function limit(lim, x) {
 
 function Action(file, json) {
     this.file = file;
+    this.type = json.capture.activities[0].actions[0].type;
     this.json = json;
     this.gyr = [];
     this.acc = [];
@@ -149,7 +150,7 @@ function Action(file, json) {
             event.name = event_names[event.eventType];
         });
 
-        if (this.vel) {
+        if (this.vel && this.type == 'golf putt') {
             // apply dynamic calibration to velocity
             var start = _.findWhere(this.events, {'name': 'start of backstroke'});
             var transition = _.findWhere(this.events, {'name': 'start of forward stroke'});
