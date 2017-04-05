@@ -702,5 +702,48 @@ angular.module("app", [])
     };
 })
 
+.filter('displayValue', function () {
+    return function (value, storageUnits) {
+        if (value) {
+            switch (storageUnits) {
+                case 'radians':
+                    return value * 180.0 / Math.PI;  // degrees
+                case 'radians per second':
+                    return value * 180.0 / Math.PI;  // degrees per second
+                case 'meters per second':
+                    return value * 2.23694;  // mph
+                case 'meters':
+                    return value * 39.3701;  // inches
+                case 'kilograms':
+                    return value * 35.274;  // oz
+                default:
+                    return value;
+            }
+        } else {
+            return value;
+        }
+    };
+})
+
+.filter('displayUnits', function () {
+    return function (storageUnits) {
+        switch (storageUnits) {
+            case 'radians':
+                return 'degrees';
+            case 'radians per second':
+                return 'degrees per second';
+            case 'meters per second':
+                return 'mph'
+            case 'meters':
+                return 'inches';
+            case 'kilograms':
+                return 'oz';
+            default:
+                return storageUnits
+        }
+    };
+})
+
+
 ;
 

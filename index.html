@@ -57,244 +57,282 @@
                     <div class="panel-heading">
                         <span class="h4">Metrics</span>&nbsp;&mdash;&nbsp;<a href="" ng-click="toggle_detail_report()">{{detail_report ? "show summary" : "show details"}}</a>
                     </div>
-                    <table class="table table-striped table-hover" ng-if="action.type == 'golf putt'">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>Metric</th>
-                                <th ng-repeat="_action in actions">
+                                <th ng-repeat="_action in actions" ng-if="actions.length < 3">
                                     <a href="" ng-click="show(_action)" class="normal no-underline" ng-class="action == _action ? 'text-primary' : 'text-muted'">{{_action.file.name | replace : '.json' }}</a>
+                                </th>
+                                <th ng-if="actions.length >= 3">
+                                    <div class="dropdown">
+                                        <button id="actionDropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            {{action.file.name | replace : '.json'}}
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="actionDropdown">
+                                            <li ng-repeat="_action in actions">
+                                                <a href="" ng-click="show(_action)" ng-class="action == _action ? 'text-primary' : 'text-muted'">{{_action.file.name | replace : '.json'}}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </th>
                                 <th>Units</th>
                                 <th>Goal</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody ng-if="action.type == 'golf putt'">
                             <tr ng-if="detail_report">
                                 <td></td>
-                                <td ng-repeat="action in actions"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
+                                <td ng-if="actions.length >= 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
                                 <td></td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Starting Time</td>
-                                <td ng-repeat="action in actions">{{action.metric('starting time')}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('starting time')}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('starting time')}}</td>
                                 <td></td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Ending Time</td>
-                                <td ng-repeat="action in actions">{{action.metric('ending time')}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('ending time')}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('ending time')}}</td>
                                 <td></td>
                                 <td></td>
                             </tr>
                             <tr class="divider">
                                 <td>Backstroke Time</td>
-                                <td ng-repeat="action in actions">{{action.metric('backstroke time') || action.metric('backswing time') | number:3}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('backstroke time') || action.metric('backswing time') | number:3}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('backstroke time') || action.metric('backswing time') | number:3}}</td>
                                 <td>sec</td>
                                 <td>0.6</td>
                             </tr>
                             <tr>
                                 <td>Forward Stroke Time</td>
-                                <td ng-repeat="action in actions">{{action.metric('forward stroke time') || action.metric('downswing time') | number:3}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('forward stroke time') || action.metric('downswing time') | number:3}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('forward stroke time') || action.metric('downswing time') | number:3}}</td>
                                 <td>sec</td>
                                 <td>0.3</td>
                             </tr>
                             <tr>
                                 <td>Total Stroke Time</td>
-                                <td ng-repeat="action in actions">{{action.metric('total stroke time') || action.metric('total swing time') | number:3}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('total stroke time') || action.metric('total swing time') | number:3}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('total stroke time') || action.metric('total swing time') | number:3}}</td>
                                 <td>sec</td>
                                 <td></td>
                             </tr>
                             <tr class="bold info">
                                 <td>Tempo Ratio</td>
-                                <td ng-repeat="action in actions">{{action.metric('tempo ratio') | number:2}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('tempo ratio') | number:2}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('tempo ratio') | number:2}}</td>
                                 <td></td>
                                 <td>2.00</td>
                             </tr>
                             <tr class="divider">
                                 <td>Backstroke Length</td>
-                                <td ng-repeat="action in actions">{{action.metric('backstroke length') | meters_to_inches | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('backstroke length') | meters_to_inches | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('backstroke length') | meters_to_inches | number:1}}</td>
                                 <td>in</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>Impact Stroke Speed</td>
-                                <td ng-repeat="action in actions">{{action.metric('stroke speed at impact') | mps_to_mph | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('stroke speed at impact') | mps_to_mph | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('stroke speed at impact') | mps_to_mph | number:1}}</td>
                                 <td>mph</td>
                                 <td></td>
                             </tr>
                             <tr class="bold info">
                                 <td>Backstroke Length to Impact Speed</td>
-                                <td ng-repeat="action in actions">{{action.metric('forward stroke length to impact speed') | seconds_to_inches_per_mph | number:2}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('forward stroke length to impact speed') | seconds_to_inches_per_mph | number:2}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('forward stroke length to impact speed') | seconds_to_inches_per_mph | number:2}}</td>
                                 <td>in/mph</td>
                                 <td>2.64-3.38</td>
                             </tr>
                             <tr class="bold info">
                                 <td>Efficiency (D/RT)</td>
-                                <td ng-repeat="action in actions">{{action.metric('efficiency') | number:2}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('efficiency') | number:2}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('efficiency') | number:2}}</td>
                                 <td></td>
                                 <td>0.5-0.64</td>
                             </tr>
                             <tr class="divider">
                                 <td>Peak Backstroke Speed</td>
-                                <td ng-repeat="action in actions">{{action.metric('peak backstroke speed') | mps_to_mph | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('peak backstroke speed') | mps_to_mph | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('peak backstroke speed') | mps_to_mph | number:1}}</td>
                                 <td>mph</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>Peak Forward Stroke Speed</td>
-                                <td ng-repeat="action in actions">{{action.metric('peak forward stroke speed') | mps_to_mph | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('peak forward stroke speed') | mps_to_mph | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('peak forward stroke speed') | mps_to_mph | number:1}}</td>
                                 <td>mph</td>
                                 <td></td>
                             </tr>
                             <tr class="bold info">
                                 <td>Forward Stroke to Backstroke Speed</td>
-                                <td ng-repeat="action in actions">{{action.metric('forward stroke to backstroke speed ratio') | number:2}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('forward stroke to backstroke speed ratio') | number:2}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('forward stroke to backstroke speed ratio') | number:2}}</td>
                                 <td></td>
                                 <td>2.00</td>
                             </tr>
                             <tr class="divider" ng-if="detail_report">
                                 <td>Backstroke Rotation</td>
-                                <td ng-repeat="action in actions">{{action.metric('backstroke rotation') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('backstroke rotation') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('backstroke rotation') | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr class="bold info">
                                 <td>Backstroke Length to Rotation Ratio</td>
-                                <td ng-repeat="action in actions">{{action.metric('backstroke length to rotation ratio') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('backstroke length to rotation ratio') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('backstroke length to rotation ratio') | number:1}}</td>
                                 <td>inches/deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Forward Stroke Rotation</td>
-                                <td ng-repeat="action in actions">{{action.metric('forward stroke rotation') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('forward stroke rotation') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('forward stroke rotation') | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr class="divider">
                                 <td>Y Angular Velocity Peak Negative</td>
-                                <td ng-repeat="action in actions">{{action.metric('y angular velocity peak negative') | degrees | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('y angular velocity peak negative') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('y angular velocity peak negative') | degrees | number:1}}</td>
                                 <td>dps</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>Y Angular Velocity Peak Positive</td>
-                                <td ng-repeat="action in actions">{{action.metric('y angular velocity peak positive') | degrees | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('y angular velocity peak positive') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('y angular velocity peak positive') | degrees | number:1}}</td>
                                 <td>dps</td>
                                 <td></td>
                             </tr>
                             <tr class="bold info">
                                 <td>Y Angular Velocity Peak Ratio</td>
-                                <td ng-repeat="action in actions">{{action.metric('y angular velocity peak ratio') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('y angular velocity peak ratio') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('y angular velocity peak ratio') | number:1}}</td>
                                 <td></td>
                                 <td>2.00</td>
                             </tr>
                             <tr class="divider">
                                 <td>X Angular Velocity Peak</td>
-                                <td ng-repeat="action in actions">{{action.metric('x angular velocity peak') | degrees | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('x angular velocity peak') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('x angular velocity peak') | degrees | number:1}}</td>
                                 <td>dps</td>
                                 <td>< 5</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>X Angular Velocity Impact</td>
-                                <td ng-repeat="action in actions">{{action.metric('x angular velocity impact') | degrees | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('x angular velocity impact') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('x angular velocity impact') | degrees | number:1}}</td>
                                 <td>dps</td>
                                 <td>< 5</td>
                             </tr>
                             <tr>
                                 <td>Z Angular Velocity Peak</td>
-                                <td ng-repeat="action in actions">{{action.metric('z angular velocity peak') | degrees | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('z angular velocity peak') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('z angular velocity peak') | degrees | number:1}}</td>
                                 <td>dps</td>
                                 <td>< 5</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Z Angular Velocity Impact</td>
-                                <td ng-repeat="action in actions">{{action.metric('z angular velocity impact') | degrees | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('z angular velocity impact') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('z angular velocity impact') | degrees | number:1}}</td>
                                 <td>dps</td>
                                 <td>< 5</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Vertical Stroke Arc</td>
-                                <td ng-repeat="action in actions">{{action.metric('vertical stroke arc') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('vertical stroke arc') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('vertical stroke arc') | number:1}}</td>
                                 <td>{{metric('vertical stroke arc').storageUnits}}</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Horizontal Stroke Arc</td>
-                                <td ng-repeat="action in actions">{{action.metric('horizontal stroke arc') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('horizontal stroke arc') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('horizontal stroke arc') | number:1}}</td>
                                 <td></td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Face Angle to Path Impact</td>
-                                <td ng-repeat="action in actions">{{action.metric('face angle to path impact') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('face angle to path impact') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('face angle to path impact') | number:1}}</td>
                                 <td></td>
                                 <td></td>
                             </tr>
                             <tr class="divider">
                                 <td>Face Angle Change</td>
-                                <td ng-repeat="action in actions">{{action.metric('direction angle change') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('direction angle change') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('direction angle change') | number:1}}</td>
                                 <td>deg</td>
                                 <td>< 1</td>
                             </tr>
                             <tr>
                                 <td>Lie Angle Change</td>
-                                <td ng-repeat="action in actions">{{action.metric('lie angle change') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle change') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('lie angle change') | number:1}}</td>
                                 <td>deg</td>
                                 <td>< 1</td>
                             </tr>
                             <tr>
                                 <td>Loft Angle Change</td>
-                                <td ng-repeat="action in actions">{{action.metric('loft angle change') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle change') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('loft angle change') | number:1}}</td>
                                 <td>deg</td>
                                 <td>< 1</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Lie Angle Address</td>
-                                <td ng-repeat="action in actions">{{action.metric('lie angle at address') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle at address') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('lie angle at address') | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Loft Angle Address</td>
-                                <td ng-repeat="action in actions">{{action.metric('loft angle at address') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle at address') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('loft angle at address') | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Lie Angle Impact</td>
-                                <td ng-repeat="action in actions">{{action.metric('lie angle at impact') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle at impact') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('lie angle at impact') | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Loft Angle Impact</td>
-                                <td ng-repeat="action in actions">{{action.metric('loft angle at impact') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle at impact') | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('loft angle at impact') | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                         </tbody>
-                    </table>
-                    <table class="table table-striped table-hover" ng-if="action.type != 'golf putt'">
-                        <thead>
-                            <tr>
-                                <th>Metric</th>
-                                <th ng-repeat="_action in actions">
-                                    <a href="" ng-click="show(_action)" class="normal no-underline" ng-class="action == _action ? 'text-primary' : 'text-muted'">{{_action.file.name | replace : '.json' }}</a>
-                                </th>
-                                <th>Units</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                        <tbody ng-if="action.type != 'golf putt'">
                             <tr ng-if="detail_report">
                                 <td></td>
-                                <td ng-repeat="action in actions"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
+                                <td ng-if="actions.length >= 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
                                 <td></td>
                             </tr>
                             <tr ng-repeat="metric in action.metrics">
                                 <td>{{metric.type}}</td>
-                                <td ng-repeat="action in actions">{{action.metric(metric.type)}}</td>
-                                <td>{{metric.storageUnits}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric(metric.type) | displayValue: metric.storageUnits}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric(metric.type) | displayValue: metric.storageUnits}}</td>
+                                <td>{{metric.storageUnits | displayUnits}}</td>
                             </tr>
                         </tbody>
                     </table>
