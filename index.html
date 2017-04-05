@@ -5,14 +5,14 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
 
-    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 <!--     <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 
-<!--     <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script> -->
+     <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
 <!--     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> -->
-<!--     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
+     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
     <!--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>-->
@@ -42,17 +42,22 @@
     </nav>
     
     <div id=main>
-        <p ng-if="!action" class="text-muted">Drag one or more JSON files anywhere on this page.</p>
+        <div class="alert alert-{{alert.type}} alert-dismissable" ng-if="alert">
+            {{alert.message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="alert.remove = true">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         <div ng-repeat="action in actions" ng-if="!action.valid" class="alert alert-danger">
             <i class="fa fa-exclamation-triangle"></i> <strong>Oh, snap!</strong> {{action.file.name}} isn't valid.
         </div>
         <div class="row">
             <div class="col-lg-5">
-                <div ng-if="actions.length > 0" class="panel panel-default">
+                <div ng-if="action" class="panel panel-default">
                     <div class="panel-heading">
                         <span class="h4">Metrics</span>&nbsp;&mdash;&nbsp;<a href="" ng-click="toggle_detail_report()">{{detail_report ? "show summary" : "show details"}}</a>
                     </div>
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover" ng-if="action.type == 'golf putt'">
                         <thead>
                             <tr>
                                 <th>Metric</th>
@@ -267,6 +272,29 @@
                                 <td ng-repeat="action in actions">{{action.metric('loft angle at impact') | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-striped table-hover" ng-if="action.type != 'golf putt'">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th ng-repeat="_action in actions">
+                                    <a href="" ng-click="show(_action)" class="normal no-underline" ng-class="action == _action ? 'text-primary' : 'text-muted'">{{_action.file.name | replace : '.json' }}</a>
+                                </th>
+                                <th>Units</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="detail_report">
+                                <td></td>
+                                <td ng-repeat="action in actions"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
+                                <td></td>
+                            </tr>
+                            <tr ng-repeat="metric in action.metrics">
+                                <td>{{metric.type}}</td>
+                                <td ng-repeat="action in actions">{{action.metric(metric.type)}}</td>
+                                <td>{{metric.storageUnits}}</td>
                             </tr>
                         </tbody>
                     </table>

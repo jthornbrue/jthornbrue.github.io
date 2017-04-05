@@ -40,19 +40,21 @@ function Action(file, json) {
     this.metrics = [];
     this.valid = false;
 
-    this._metric = function (type) {
-        return _.findWhere(this.metrics, {'type': type}) || {};
+    var self = this;
+
+    // return metric object
+    this._metric = function (type, group) {
+        return (group ? _.findWhere(this.metrics, {'type': type, 'group': group}) : _.findWhere(this.metrics, {'type': type})) || {};
     };
 
-    this.metric = function (type) {
-        return this._metric(type).value;
+    // return metric value
+    this.metric = function (type, group) {
+        return this._metric(type, group).value;
     };
 
     this.event = function (name) {
         return _.findWhere(this.events, {'name': name}) || {};
     };
-
-    var self = this;
 
     if (json.SensorCalibratedData) {
         // old JSON format
@@ -62,6 +64,15 @@ function Action(file, json) {
                 x: sample.gX,
                 y: sample.gY,
                 z: sample.gZ
+            }
+        });
+
+        this.acc = _.map(json.SensorCalibratedData, function (sample) {
+            return {
+                timestamp: sample.Timestamp,
+                x: sample.aX,
+                y: sample.aY,
+                z: sample.aZ
             }
         });
 
@@ -102,6 +113,18 @@ function Action(file, json) {
             };
         });
 
+        this.acc = _.map(json.capture.calibratedSensorData.samples, function (sample) {
+
+            var xyz = _.map(sample[1].split(','),  parseFloat);
+
+            return {
+                timestamp: sample[0],
+                x: handedness * xyz[0],
+                y: handedness * xyz[1],
+                z: xyz[2]
+            };
+        });
+
         _.each(json.capture.activities[0].actions[0].metricGroups, function (group) {
             _.each(group.metrics, function (metric) {
                 if (metric.type == 'clubhead velocity vector') {
@@ -119,6 +142,7 @@ function Action(file, json) {
                         };
                     });
                 } else if (metric.composition == 'scalar') {
+                    metric.group = group.name;
                     self.metrics.push(metric);
                 }
             });
@@ -136,21 +160,44 @@ function Action(file, json) {
                 'end of data',
                 'impact',
                 'start of downswing',
-                'peak wrist snap',
+                'peak centripetal acceleration',
                 'peak speed',
                 'take off',
                 'landing',
                 'start of backswing',
                 'peak height',
                 'start of backstroke',
-                'start of forward stroke'
+                'start of forward stroke',
+                'start of motion',
+                'start of centripetal acceleration',
+                'on plane',
+                'commit',
+                'pre downswing',
+                'end of follow through',
+                'peak hand speed',
+                'peak bat speed'
             ];
 
         _.each(this.events, function (event) {
-            event.name = event_names[event.eventType];
+            if (event.eventType) {
+                // old format
+                event.name = event_names[event.eventType];
+            } else {
+                // new format
+                event = {
+                    'name': event.type.name,
+                    'type': event.type.value,
+                    'time': event.timeOffset,
+                    'index': event.sampleIndex
+                }
+            }
         });
 
-        if (this.vel && this.type == 'golf putt') {
+        this.events.sort(function (a, b) {
+            return a.time - b.time;
+        });
+
+        if (this.type == 'golf putt' && this.vel) {
             // apply dynamic calibration to velocity
             var start = _.findWhere(this.events, {'name': 'start of backstroke'});
             var transition = _.findWhere(this.events, {'name': 'start of forward stroke'});
@@ -246,6 +293,7 @@ function Action(file, json) {
             var start = _.findWhere(this.events, {'name': 'start of backstroke'}) || _.findWhere(this.events, {'name': 'start of backswing'});
             var gyr_pre_impact = _.filter(this.gyr, function (it) { return it.timestamp >= start.time && it.timestamp <= impact.time; });
 
+            // store derived metrics in this group until they're implemented in the framework
             var y_angular_velocity_peak_negative = _.min(_.pluck(gyr_pre_impact, 'y'));
             this.metrics.push({
                 'type': 'y angular velocity peak negative',
@@ -332,6 +380,7 @@ angular.module("app", [])
     $scope.actions = [];
     $scope.action = null;
     $scope.normalize_graphs = false;
+    $scope.alert = {'type': 'info', 'message': 'Drag one or more JSON files anywhere on this page.'};
 
     $scope.toggle_detail_report = function () {
         $scope.detail_report = !$scope.detail_report;
@@ -360,8 +409,14 @@ angular.module("app", [])
 
         _.each($scope.actions, function (action) {
 
+            var normalize;
             if (action.gyr) {
-                var normalize = $scope.normalize_graphs ? $scope.action.metric('y angular velocity peak positive') / action.metric('y angular velocity peak positive') : 1.0;
+
+                if (action.type == 'golf putt') {
+                    normalize = $scope.normalize_graphs ? $scope.action.metric('y angular velocity peak positive') / action.metric('y angular velocity peak positive') : 1.0;
+                } else if (action.type == 'baseball swing') {
+                    normalize = $scope.normalize_graphs ? $scope.action.metric('swing speed') / action.metric('swing speeed') : 1.0;
+                }
 
                 data.push({
                     x: _.pluck(action.gyr, 'timestamp'),
@@ -406,58 +461,103 @@ angular.module("app", [])
                 });
             }
 
-            var normalize = $scope.normalize_graphs ? $scope.action.metric('peak forward stroke speed') / action.metric('peak forward stroke speed') : 1.0;
+            if (action.type == 'golf putt') {
+                normalize = $scope.normalize_graphs ? $scope.action.metric('peak forward stroke speed') / action.metric('peak forward stroke speed') : 1.0;
 
-            if (action.acc) {
+                if (action.acc) {
+                    data.push({
+                        x: _.pluck(action.acc, 'timestamp'),
+                        y: _.map(action.acc, function (it) { return it.x * 2.23694 * normalize; }),
+                        name: 'acc (mph/s)',
+                        legendgroup: 'acc',
+                        showlegend: action == $scope.action,
+                        type: 'scatter',
+                        yaxis: 'y2',
+                        line: {
+                            color: 'darkorange',
+                            width: action == $scope.action ? 2 : 1
+                        }
+
+                    });
+                }
+
+                if (action.vel) {
+                    data.push({
+                        x: _.pluck(action.vel, 'timestamp'),
+                        y: _.map(action.vel, function (it) { return mph(it.x) * normalize; }),
+                        name: 'speed (mph)',
+                        legendgroup: 'speed',
+                        showlegend: action == $scope.action,
+                        type: 'scatter',
+                        yaxis: 'y2',
+                        line: {
+                            color: 'darkblue',
+                            width: action == $scope.action ? 2 : 1
+                        }
+
+                    });
+                }
+
+                if (action.pos) {
+                    data.push({
+                        x: _.pluck(action.pos, 'timestamp'),
+                        y: _.map(action.pos, function (it) { return inches(it.x) * normalize; }),
+                        name: 'position (in)',
+                        legendgroup: 'position',
+                        showlegend: action == $scope.action,
+                        type: 'scatter',
+                        yaxis: 'y2',
+                        line: {
+                            color: 'darkorchid',
+                            width: action == $scope.action ? 2 : 1
+                        }
+
+                    });
+                }
+            } else if (action.type == 'baseball swing') {
                 data.push({
                     x: _.pluck(action.acc, 'timestamp'),
-                    y: _.map(action.acc, function (it) { return it.x * 2.23694 * normalize; }),
-                    name: 'acc (mph/s)',
-                    legendgroup: 'acc',
+                    y: _.map(action.acc, function (it) { return it.x * normalize / 9.81; }),
+                    name: 'accel x',
+                    legendgroup: 'accel x',
                     showlegend: action == $scope.action,
                     type: 'scatter',
                     yaxis: 'y2',
                     line: {
-                        color: 'darkorange',
+                        color: 'dodgerblue',
                         width: action == $scope.action ? 2 : 1
                     }
-
                 });
-            }
 
-            if (action.vel) {
                 data.push({
-                    x: _.pluck(action.vel, 'timestamp'),
-                    y: _.map(action.vel, function (it) { return mph(it.x) * normalize; }),
-                    name: 'speed (mph)',
-                    legendgroup: 'speed',
+                    x: _.pluck(action.acc, 'timestamp'),
+                    y: _.map(action.gyr, function (it) { return it.y * normalize / 9.81; }),
+                    name: 'accel y',
+                    legendgroup: 'accel y',
                     showlegend: action == $scope.action,
                     type: 'scatter',
                     yaxis: 'y2',
                     line: {
-                        color: 'darkblue',
+                        color: 'forestgreen',
                         width: action == $scope.action ? 2 : 1
                     }
-
                 });
-            }
 
-            if (action.pos) {
                 data.push({
-                    x: _.pluck(action.pos, 'timestamp'),
-                    y: _.map(action.pos, function (it) { return inches(it.x) * normalize; }),
-                    name: 'position (in)',
-                    legendgroup: 'position',
+                    x: _.pluck(action.acc, 'timestamp'),
+                    y: _.map(action.acc, function (it) { return it.z * normalize / 9.81; }),
+                    name: 'accel z',
+                    legendgroup: 'accel z',
                     showlegend: action == $scope.action,
                     type: 'scatter',
                     yaxis: 'y2',
                     line: {
-                        color: 'darkorchid',
+                        color: 'firebrick',
                         width: action == $scope.action ? 2 : 1
                     }
-
                 });
             }
+
         });
 
         var shapes = [{
@@ -489,20 +589,23 @@ angular.module("app", [])
             });
         });
 
-//        var y = -1;
-//
-//        var annotations = _.map($scope.action.events, function (event) {
-//            ++y;
-//            return {
-//                'yref': 'paper',
-//                'x': event.time,
-//                'y': $scope.action.events.length == 1 ? 1 : y / ($scope.action.events.length - 1),
-//                'text': event.name,
-//                'showarrow': false,
-//                'xanchor': 'center',
-//
-//            };
-//        });
+        var annotations = [];
+        if ($scope.action.type == 'baseball swing') {
+            var y = -1;
+
+            annotations = _.map($scope.action.events, function (event) {
+                ++y;
+                return {
+                    'yref': 'paper',
+                    'x': event.time,
+                    'y': $scope.action.events.length == 1 ? 1 : y / ($scope.action.events.length - 1),
+                    'text': event.name,
+                    'showarrow': false,
+                    'xanchor': 'center',
+
+                };
+            });
+        }
 
         var layout = {
             yaxis: {
@@ -511,6 +614,7 @@ angular.module("app", [])
             },
             yaxis2: {
                 domain: [0, 0.46],
+                title: $scope.action.type == 'golf putt' ? null : 'g'
             },
             xaxis: {
                 anchor: 'y2',
@@ -520,16 +624,21 @@ angular.module("app", [])
                 ]
             },
             shapes: shapes,
-            // annotations: annotations
+            annotations: annotations
         };
 
         Plotly.newPlot('plotly', data, layout);
     };
 
     function upload(file, result) {
+        $scope.alert = null;
         var action = new Action(file, JSON.parse(result));
-        $scope.actions.push(action);
-        $scope.show(action);
+        if ($scope.action && action.type != $scope.action.type) {
+            $scope.alert = {'type': 'danger', 'message': "Can't mix " + action.type + " action with " + $scope.action.type + "."};
+        } else {
+            $scope.actions.push(action);
+            $scope.show(action);
+        }
     }
 
     // setup drag/drop zone over the map
