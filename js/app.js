@@ -428,7 +428,7 @@ angular.module("app", [])
                     yaxis: 'y1',
                     line: {
                         color: 'dodgerblue',
-                        width: action == $scope.action ? 2 : 1
+                        width: action == $scope.action ? 3 : 0.5
                     }
                 });
 
@@ -442,7 +442,7 @@ angular.module("app", [])
                     yaxis: 'y1',
                     line: {
                         color: 'forestgreen',
-                        width: action == $scope.action ? 2 : 1
+                        width: action == $scope.action ? 3 : 0.5
                     }
                 });
 
@@ -456,7 +456,7 @@ angular.module("app", [])
                     yaxis: 'y1',
                     line: {
                         color: 'firebrick',
-                        width: action == $scope.action ? 2 : 1
+                        width: action == $scope.action ? 3 : 0.5
                     }
                 });
             }
@@ -475,7 +475,7 @@ angular.module("app", [])
                         yaxis: 'y2',
                         line: {
                             color: 'darkorange',
-                            width: action == $scope.action ? 2 : 1
+                            width: action == $scope.action ? 3 : 0.5
                         }
 
                     });
@@ -492,7 +492,7 @@ angular.module("app", [])
                         yaxis: 'y2',
                         line: {
                             color: 'darkblue',
-                            width: action == $scope.action ? 2 : 1
+                            width: action == $scope.action ? 3 : 0.5
                         }
 
                     });
@@ -509,7 +509,7 @@ angular.module("app", [])
                         yaxis: 'y2',
                         line: {
                             color: 'darkorchid',
-                            width: action == $scope.action ? 2 : 1
+                            width: action == $scope.action ? 3 : 0.5
                         }
 
                     });
@@ -525,7 +525,7 @@ angular.module("app", [])
                     yaxis: 'y2',
                     line: {
                         color: 'dodgerblue',
-                        width: action == $scope.action ? 2 : 1
+                        width: action == $scope.action ? 3 : 0.5
                     }
                 });
 
@@ -539,7 +539,7 @@ angular.module("app", [])
                     yaxis: 'y2',
                     line: {
                         color: 'forestgreen',
-                        width: action == $scope.action ? 2 : 1
+                        width: action == $scope.action ? 3 : 0.5
                     }
                 });
 
@@ -553,7 +553,7 @@ angular.module("app", [])
                     yaxis: 'y2',
                     line: {
                         color: 'firebrick',
-                        width: action == $scope.action ? 2 : 1
+                        width: action == $scope.action ? 3 : 0.5
                     }
                 });
             }
