@@ -99,7 +99,7 @@ function Action(file, json) {
     } else if (json.capture) {
         // new JSON format
 
-        var handedness = json.equipment.handedness == "right" ? 1 : -1;
+        var handedness = this.type == 'golf putt' && json.equipment.handedness == "left" ? -1 : 1;
 
         this.gyr = _.map(json.capture.calibratedSensorData.samples, function (sample) {
 
@@ -415,7 +415,7 @@ angular.module("app", [])
                 if (action.type == 'golf putt') {
                     normalize = $scope.normalize_graphs ? $scope.action.metric('y angular velocity peak positive') / action.metric('y angular velocity peak positive') : 1.0;
                 } else if (action.type == 'baseball swing') {
-                    normalize = $scope.normalize_graphs ? $scope.action.metric('swing speed') / action.metric('swing speeed') : 1.0;
+                    normalize = $scope.normalize_graphs ? $scope.action.metric('swing speed') / action.metric('swing speed') : 1.0;
                 }
 
                 data.push({
