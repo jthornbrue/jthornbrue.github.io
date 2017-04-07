@@ -572,7 +572,8 @@ angular.module("app", [])
         }];
 
 
-        _.each($scope.actions, function (action) {
+        var actions = ($scope.actions.length < 3) ? $scope.actions : [$scope.action];
+        _.each(actions, function (action) {
             _.each(action.events, function (event) {
                 shapes.push({
                     'type': 'line',
