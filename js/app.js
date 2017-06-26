@@ -30,7 +30,6 @@ function limit(lim, x) {
 
 function Action(file, json) {
     this.file = file;
-    this.type = json.capture.activities[0].actions[0].type;
     this.json = json;
     this.gyr = [];
     this.acc = [];
@@ -97,9 +96,13 @@ function Action(file, json) {
         this.valid = true;
 
     } else if (json.capture) {
-        // new JSON format
+        // newerer JSON format
 
-        var handedness = this.type == 'golf putt' && json.equipment.handedness == "left" ? -1 : 1;
+        var action = json.capture.activities[0].actions[0];
+
+        this.type = action.type;
+
+        var handedness = (this.type == 'golf putt' || this.type == 'golf swing') && json.equipment.handedness == "left" ? -1 : 1;
 
         this.gyr = _.map(json.capture.calibratedSensorData.samples, function (sample) {
 
@@ -125,7 +128,7 @@ function Action(file, json) {
             };
         });
 
-        _.each(json.capture.activities[0].actions[0].metricGroups, function (group) {
+        _.each(action.metricGroups, function (group) {
             _.each(group.metrics, function (metric) {
                 if (metric.type == 'clubhead velocity vector') {
                     var dt = metric.samplingPeriod;
@@ -148,7 +151,7 @@ function Action(file, json) {
             });
         });
 
-        this.events = json.capture.activities[0].actions[0].eventMarkers;
+        this.events = action.eventMarkers;
 
         var event_names = [
                 'start of action',
@@ -412,7 +415,7 @@ angular.module("app", [])
             var normalize;
             if (action.gyr) {
 
-                if (action.type == 'golf putt') {
+                if (action.type == 'golf putt' || action.type == 'golf swing') {
                     normalize = $scope.normalize_graphs ? $scope.action.metric('y angular velocity peak positive') / action.metric('y angular velocity peak positive') : 1.0;
                 } else if (action.type == 'baseball swing') {
                     normalize = $scope.normalize_graphs ? $scope.action.metric('swing speed') / action.metric('swing speed') : 1.0;
@@ -514,7 +517,7 @@ angular.module("app", [])
 
                     });
                 }
-            } else if (action.type == 'baseball swing') {
+            } else if (action.type == 'baseball swing' || action.type == 'golf swing') {
                 data.push({
                     x: _.pluck(action.acc, 'timestamp'),
                     y: _.map(action.acc, function (it) { return it.x * normalize / 9.81; }),
