@@ -182,8 +182,8 @@
                             </tr>
                             <tr class="divider" ng-if="detail_report">
                                 <td>Backstroke Rotation</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('backstroke rotation') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('backstroke rotation') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('backstroke rotation') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('backstroke rotation') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
@@ -196,8 +196,8 @@
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Forward Stroke Rotation</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('forward stroke rotation') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('forward stroke rotation') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('forward stroke rotation') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('forward stroke rotation') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
@@ -252,16 +252,16 @@
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Vertical Stroke Arc</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('vertical stroke arc') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('vertical stroke arc') | number:1}}</td>
-                                <td>{{metric('vertical stroke arc').storageUnits}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('vertical stroke arc') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('vertical stroke arc') | degrees | number:1}}</td>
+                                <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Horizontal Stroke Arc</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('horizontal stroke arc') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('horizontal stroke arc') | number:1}}</td>
-                                <td></td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('horizontal stroke arc') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('horizontal stroke arc') | degrees | number:1}}</td>
+                                <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
@@ -273,50 +273,50 @@
                             </tr>
                             <tr class="divider">
                                 <td>Face Angle Change</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('direction angle change') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('direction angle change') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('direction angle change') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('direction angle change') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td>< 1</td>
                             </tr>
                             <tr>
                                 <td>Lie Angle Change</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle change') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('lie angle change') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle change') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('lie angle change') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td>< 1</td>
                             </tr>
                             <tr>
                                 <td>Loft Angle Change</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle change') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('loft angle change') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle change') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('loft angle change') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td>< 1</td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Lie Angle Address</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle at address') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('lie angle at address') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle at address') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('lie angle at address') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Loft Angle Address</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle at address') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('loft angle at address') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle at address') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('loft angle at address') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Lie Angle Impact</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle at impact') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('lie angle at impact') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('lie angle at impact') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('lie angle at impact') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>
                             <tr ng-if="detail_report">
                                 <td>Loft Angle Impact</td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle at impact') | number:1}}</td>
-                                <td ng-if="actions.length >= 3">{{action.metric('loft angle at impact') | number:1}}</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('loft angle at impact') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('loft angle at impact') | degrees | number:1}}</td>
                                 <td>deg</td>
                                 <td></td>
                             </tr>

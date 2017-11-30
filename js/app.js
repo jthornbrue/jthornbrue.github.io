@@ -96,7 +96,7 @@ function Action(file, json) {
         this.valid = true;
 
     } else if (json.capture) {
-        // newerer JSON format
+        // pre NGA Golf JSON format
 
         var action = json.capture.activities[0].actions[0];
 
@@ -146,6 +146,10 @@ function Action(file, json) {
                     });
                 } else if (metric.composition == 'scalar') {
                     metric.group = group.name;
+                    if (metric.storageUnits == 'degrees') {
+                        metric.value = metric.value * Math.PI / 180.0;
+                        metric.storageUnits = 'radians';
+                    }
                     self.metrics.push(metric);
                 }
             });
@@ -372,6 +376,249 @@ function Action(file, json) {
 
         this.valid = true;
     }
+    else
+    {
+        // NGA Golf JSON format
+
+        var action = json.actions[0];
+
+        this.type = action.type.name;
+
+        var handedness = (this.type == 'golf putt' || this.type == 'golf swing') && json.equipment.handedness.name == "left" ? -1 : 1;
+
+        this.gyr = _.map(json.calibratedSensorData.samples[0].sampleSet, function (sample) {
+
+            return {
+                timestamp: sample[0],
+                x: handedness * sample[2][0],
+                y: handedness * sample[2][1],
+                z: sample[2][2]
+            };
+        });
+
+        this.acc = _.map(json.calibratedSensorData.samples[0].sampleSet, function (sample) {
+
+           return {
+                timestamp: sample[0],
+                x: handedness * sample[1][0],
+                y: handedness * sample[1][1],
+                z: sample[1][2]
+            };
+        });
+
+        _.each(action.metricGroups, function (group) {
+            _.each(group.metrics, function (metric) {
+                if (metric.type.name == 'clubhead velocity vector series') {
+                    var dt = metric.samplingPeriod;
+                    var k = -1;
+                    self.vel = _.map(metric.values, function (value) {
+                        ++k;
+                        return {
+                            timestamp: k * dt,
+                            x: value[0],
+                            y: value[1],
+                            z: value[2]
+                        };
+                    });
+                } else if (metric.isDiscrete) {
+                    self.metrics.push({
+                        'type': metric.type.name,
+                        'group': group.metricGroupType.name,
+                        'value': metric.value,
+                        'units': metric.storageUnits && metric.storageUnits.name
+                    })
+                    metric.group = group.name;
+                    self.metrics.push(metric);
+                }
+            });
+        });
+
+        this.events = _.map(action.eventMarkers, function (event) {
+        	return {
+                    'name': event.type.name,
+                    'type': event.type.value,
+                    'time': event.timeOffset,
+                    'index': event.sampleIndex
+                };
+        });
+
+        this.events.sort(function (a, b) {
+            return a.time - b.time;
+        });
+
+        if (this.type == 'golf putt' && this.vel) {
+            // apply dynamic calibration to velocity
+            var start = _.findWhere(this.events, {'name': 'start of backstroke'});
+            var transition = _.findWhere(this.events, {'name': 'start of forward stroke'});
+            var impact = _.findWhere(this.events, {'name': 'impact'});
+            var dt = transition.time - start.time;
+            var x = -this.vel[transition.index].x / dt;
+            var y = -this.vel[transition.index].y / dt;
+            var z = -this.vel[transition.index].z / dt;
+            _.each(this.vel, function (v, k) {
+                if (k >= start.index) {
+                    var dt = v.timestamp - start.time;
+                    v.x += x * dt;
+                    v.y += y * dt;
+                    v.z += z * dt;
+                }
+            });
+
+            // differentiate velocity to get linear acceleration
+            this.acc = _.map(_.zip(_.slice(this.vel, 0, this.vel.length - 1), _.slice(this.vel, 1)), function (pair) {
+                var v0 = _.first(pair);
+                var v1 = _.last(pair);
+                var dt = v1.timestamp - v0.timestamp;
+                return {
+                    'timestamp': v1.timestamp,
+                    'x': (v1.x - v0.x) / dt,
+                    'y': (v1.y - v0.y) / dt,
+                    'z': (v1.z - v0.z) / dt
+                };
+            });
+
+            // smooth acceleration
+            var impact = this.event('impact');
+            _.each(['x', 'y', 'z'], function (component) {
+                var alpha = Math.exp(-1 / 10);
+                var beta = 1.0 - alpha;
+
+                // forward filter
+                var forward = [];
+                var value = 0.0;
+                for (var index = 0; index < impact.index; ++index) {
+                    value = alpha * value + beta * self.acc[index][component];
+                    forward.push(value);
+                }
+                // backward filter
+                value = _.sum(_.pluck(_.slice(self.acc, impact.index - 5, impact.index))) / 5;
+                for (var index = impact.index - 1; index >= 0; --index) {
+                    value = alpha * value + beta * self.acc[index][component];
+                    self.acc[index][component] = 0.5 * (value + forward[index]);
+                }
+
+                // limit the acceleration magnitude after impact
+                _.each(self.acc, function (it) {
+                    if (it.timestamp > impact.time) {
+                        it[component] = limit(0.5 * 9.81, it[component]);
+                    }
+                });
+            });
+
+            // integrate velocity to get position
+            var sum = {
+                'timestamp': _.first(this.vel).timestamp,
+                'x': 0.0,
+                'y': 0.0,
+                'z': 0.0
+            };
+
+            this.pos = _.map(this.vel, function (v, k) {
+                var dt = v.timestamp - sum.timestamp;
+                sum.timestamp = v.timestamp;
+                sum.x += v.x * dt;
+                sum.y += v.y * dt;
+                sum.z += v.z * dt;
+                return _.clone(sum);
+            });
+
+            // apply dynamic calibration to position
+            dt = impact.time - start.time;
+            x = (this.pos[start.index].x - this.pos[impact.index].x) / dt;
+            y = (this.pos[start.index].y - this.pos[impact.index].y) / dt;
+            z = (this.pos[start.index].z - this.pos[impact.index].z) / dt;
+            _.each(this.pos, function (p, k) {
+                if (k >= start.index) {
+                    var dt = p.timestamp - start.time;
+                    p.x += x * dt;
+                    p.y += y * dt;
+                    p.z += z * dt;
+                }
+            });
+
+            // TODO: calculate these metrics in the framework instead of here
+
+            var impact = _.findWhere(this.events, {'name': 'impact'});
+            var start = _.findWhere(this.events, {'name': 'start of backstroke'}) || _.findWhere(this.events, {'name': 'start of backswing'});
+            var gyr_pre_impact = _.filter(this.gyr, function (it) { return it.timestamp >= start.time && it.timestamp <= impact.time; });
+
+            // store derived metrics in this group until they're implemented in the framework
+            var y_angular_velocity_peak_negative = _.min(_.pluck(gyr_pre_impact, 'y'));
+            this.metrics.push({
+                'type': 'y angular velocity peak negative',
+                'value': y_angular_velocity_peak_negative,
+                'storageUnits': 'radians/sec'
+            });
+
+            var y_angular_velocity_peak_positive =  _.max(_.pluck(gyr_pre_impact, 'y'));
+            this.metrics.push({
+                'type': 'y angular velocity peak positive',
+                'value': y_angular_velocity_peak_positive,
+                'storageUnits': 'radians/sec'
+            });
+
+            this.metrics.push({
+                'type': 'y angular velocity peak ratio',
+                'value': Math.abs(y_angular_velocity_peak_positive / y_angular_velocity_peak_negative),
+                'storageUnits': 'ratio'
+            });
+
+            this.metrics.push({
+                'type': 'x angular velocity peak',
+                'value': _.max(_.map(_.pluck(gyr_pre_impact, 'x'), Math.abs)),
+                'storageUnits': 'radians/sec'
+            });
+
+            this.metrics.push({
+                'type': 'x angular velocity impact',
+                'value': _.last(gyr_pre_impact).x,
+                'storageUnits': 'radians/sec'
+            });
+
+            this.metrics.push({
+                'type': 'z angular velocity peak',
+                'value': _.max(_.map(_.pluck(gyr_pre_impact, 'z'), Math.abs)),
+                'storageUnits': 'radians/sec'
+            });
+
+            this.metrics.push({
+                'type': 'z angular velocity impact',
+                'value': _.last(gyr_pre_impact).z,
+                'storageUnits': 'radians/sec'
+            });
+
+            this.metrics.push({
+                'type': 'backstroke length to rotation ratio',
+                'value': Math.abs(this.metric('backstroke length') / this.metric('backstroke rotation') * 39.3701),
+                'storageUnits': 'inches/deg'
+            });
+
+            // FIXME fixes a bug in the framework (remove this as soon as that bug is fixed)
+            var peak_backstroke_speed = this._metric('peak backstroke speed');
+            peak_backstroke_speed.value = _.max(_.map(_.slice(this.vel, start.index, transition.index), function (v) { return Math.abs(v.x); }));
+            var peak_forward_stroke_speed = this._metric('peak forward stroke speed');
+            var back_to_forward_stroke_speed = this._metric('backstroke to forward stroke speed ratio');
+
+            var backstroke_to_forward_stroke_speed_ratio = this._metric('backstroke to forward stroke speed ratio');
+            if (backstroke_to_forward_stroke_speed_ratio) {
+                backstroke_to_forward_stroke_speed_ratio.value = peak_backstroke_speed.value / peak_forward_stroke_speed.value;
+                this.metrics.push({
+                    'type': 'forward stroke to backstroke speed ratio',
+                    'value': peak_forward_stroke_speed.value / peak_backstroke_speed.value,
+                    'storageUnits': backstroke_to_forward_stroke_speed_ratio.storageUnits
+                });
+            }
+
+            this.metrics.push({
+                'type': 'efficiency',
+                'value': this.metric('backstroke length') / (this.metric('stroke speed at impact') * this.metric('forward stroke time')),
+                'storageUnits': 'ratio'
+            });
+        }
+
+        this.valid = true;
+    }
+
 }
 
 // angular
