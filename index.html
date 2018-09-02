@@ -62,12 +62,12 @@
                             <tr>
                                 <th>Metric</th>
                                 <th ng-repeat="_action in actions" ng-if="actions.length < 3">
-                                    <a href="" ng-click="show(_action)" class="normal no-underline" ng-class="action == _action ? 'text-primary' : 'text-muted'">{{_action.file.name | replace : '.json' }}</a>
+                                    <a href="" ng-click="show(_action)" class="normal no-underline" ng-class="action == _action ? 'text-primary' : 'text-muted'">{{_action.file.name | replace : '.json' | truncate}}</a>
                                 </th>
                                 <th ng-if="actions.length >= 3">
                                     <div class="dropdown">
                                         <button id="actionDropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            {{action.file.name | replace : '.json'}}
+                                            {{action.file.name | replace : '.json' | truncate}}
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="actionDropdown">

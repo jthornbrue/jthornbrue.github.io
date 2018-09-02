@@ -953,6 +953,13 @@ angular.module("app", [])
     };
 })
 
+.filter('truncate', function () {
+    return function (x, n) {
+        n = n || 11;
+        return (x.length <= n) ? x : x.substring(0, n) + '…';
+    };
+})
+
 .filter('displayValue', function () {
     return function (value, storageUnits) {
         if (value) {
