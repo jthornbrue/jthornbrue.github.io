@@ -327,12 +327,14 @@
                                 <td ng-repeat="action in actions" ng-if="actions.length < 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
                                 <td ng-if="actions.length >= 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
                                 <td></td>
+                                <td></td>
                             </tr>
                             <tr ng-repeat="metric in action.metrics">
                                 <td>{{metric.type}}</td>
                                 <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric(metric.type) | displayValue: metric.storageUnits}}</td>
                                 <td ng-if="actions.length >= 3">{{action.metric(metric.type) | displayValue: metric.storageUnits}}</td>
                                 <td>{{metric.storageUnits | displayUnits}}</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

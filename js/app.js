@@ -892,7 +892,7 @@ angular.module("app", [])
         }
     }
 
-    // setup drag/drop zone over the map
+    // setup drag/drop zone
     var dropZone = document.body;
 
     dropZone.addEventListener('dragover', function(e) {
