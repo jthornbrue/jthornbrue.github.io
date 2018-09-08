@@ -96,7 +96,7 @@ function Action(file, json) {
         this.valid = true;
 
     } else if (json.capture) {
-        // pre NGA Golf JSON format
+        // pre NGA JSON format
 
         var action = json.capture.activities[0].actions[0];
 
@@ -378,7 +378,7 @@ function Action(file, json) {
     }
     else
     {
-        // NGA Golf JSON format
+        // NGA JSON format
 
         var action = json.actions[0];
 
@@ -427,8 +427,6 @@ function Action(file, json) {
                         'value': metric.value,
                         'units': metric.storageUnits && metric.storageUnits.name
                     })
-                    metric.group = group.name;
-                    self.metrics.push(metric);
                 }
             });
         });
@@ -665,7 +663,7 @@ angular.module("app", [])
                 if (action.type == 'golf putt' || action.type == 'golf swing') {
                     normalize = $scope.normalize_graphs ? $scope.action.metric('y angular velocity peak positive') / action.metric('y angular velocity peak positive') : 1.0;
                 } else if (action.type == 'baseball swing') {
-                    normalize = $scope.normalize_graphs ? $scope.action.metric('swing speed') / action.metric('swing speed') : 1.0;
+                    normalize = $scope.normalize_graphs ? $scope.action.metric('bat speed') / action.metric('bat speed') : 1.0;
                 }
 
                 data.push({
@@ -928,6 +926,24 @@ angular.module("app", [])
     };
 })
 
+.filter('milliseconds', function () {
+    return function (x) {
+        return x ? x * 1000 : '';
+    };
+})
+
+.filter('percent', function () {
+    return function (x) {
+        return x ? x * 100 : '';
+    };
+})
+
+.filter('mps2_to_g', function () {
+    return function (x) {
+        return x ? x / 9.81 : '';
+    };
+})
+
 .filter('mps_to_mph', function () {
     return function (x) {
         return x ? x * 2.23694 : '';
@@ -955,8 +971,8 @@ angular.module("app", [])
 
 .filter('truncate', function () {
     return function (x, n) {
-        n = n || 11;
-        return (x.length <= n) ? x : x.substring(0, n) + '…';
+        n = n || 7;
+        return (x.length <= 2 * n + 1) ? x : x.substring(0, n) + '…' + x.substring(x.length - n, x.length);
     };
 })
 

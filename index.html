@@ -81,7 +81,7 @@
                                 <th>Goal</th>
                             </tr>
                         </thead>
-                        <tbody ng-if="action.type == 'golf putt'">
+                        <tbody>
                             <tr ng-if="detail_report">
                                 <td></td>
                                 <td ng-repeat="action in actions" ng-if="actions.length < 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
@@ -89,6 +89,150 @@
                                 <td></td>
                                 <td></td>
                             </tr>
+                        </tbody>
+                        <tbody ng-if="action.type == 'baseball swing'">
+                            <tr>
+                                <td>Handedness</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('handedness') == 5 ? "Right" : "Left"}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('handedness') == 5 ? "Right" : "Left"}}</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Bat Speed</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('bat speed') | mps_to_mph | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('bat speed') | mps_to_mph | number:1}}</td>
+                                <td>mph</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Peak Bat Speed</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('peak bat speed') | mps_to_mph | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('peak bat speed') | mps_to_mph | number:1}}</td>
+                                <td>mph</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Peak Hand Speed</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('peak hand speed') | mps_to_mph | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('peak hand speed') | mps_to_mph | number:1}}</td>
+                                <td>mph</td>
+                                <td></td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Power</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('power') | number:0}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('power') | number:0}}</td>
+                                <td>Watts</td>
+                                <td></td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Time to Contact</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('time to contact') | milliseconds | number:0}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('time to contact') | milliseconds | number:0}}</td>
+                                <td>ms</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Commit Time</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('commit time') | milliseconds | number:0}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('commit time') | milliseconds | number:0}}</td>
+                                <td>ms</td>
+                                <td></td>
+                            </tr>
+                            <tr class="divider">
+                                <td>On Plane</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('on plane') | percent | number:0}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('on plane') | percent | number:0}}</td>
+                                <td>%</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Planar Efficiency</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('planar efficiency') | percent | number:0}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('planar efficiency') | percent | number:0}}</td>
+                                <td>%</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Rotational Acceleration</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('rotational acceleration') | mps2_to_g | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('rotational acceleration') | mps2_to_g | number:1}}</td>
+                                <td>g</td>
+                                <td></td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Attack Angle</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('attack angle') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('attack angle') | degrees | number:1}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Vertical Bat Angle</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('vertical bat angle') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('vertical bat angle') | degrees | number:1}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Body Rotation</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('body rotation') | percent | number:0}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('body rotation') | percent | number:0}}</td>
+                                <td>%</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Hinge Angle at Commit</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('hinge angle at commit') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('hinge angle at commit') | degrees | number:1}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Hinge Angle at Impact</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('hinge angle at impact') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('hinge angle at impact') | degrees | number:1}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Hinge Release</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('hinge release') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('hinge release') | degrees | number:1}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Body Equipment Connection</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('body equipment connection') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('body equipment connection') | degrees | number:1}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Body Tilt Angle</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('body tilt angle') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('body tilt angle') | degrees | number:1}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr ng-if="detail_report">
+                                <td>Equipment Orientation</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('equipment orientation') | degrees | number:1}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('equipment orientation') | degrees | number:1}}</td>
+                                <td>deg</td>
+                                <td></td>
+                            </tr>
+                            <tr class="divider">
+                                <td>Blast Factor</td>
+                                <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('Blast factor 2')}}</td>
+                                <td ng-if="actions.length >= 3">{{action.metric('Blast factor 2')}}</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                        <tbody ng-if="action.type == 'golf putt'">
                             <tr ng-if="detail_report">
                                 <td>Starting Time</td>
                                 <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric('starting time')}}</td>
@@ -321,14 +465,7 @@
                                 <td></td>
                             </tr>
                         </tbody>
-                        <tbody ng-if="action.type != 'golf putt'">
-                            <tr ng-if="detail_report">
-                                <td></td>
-                                <td ng-repeat="action in actions" ng-if="actions.length < 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
-                                <td ng-if="actions.length >= 3"><a href="" ng-click="trash(action)"><i class="fa fa-trash"/></a></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                        <tbody ng-if="action.type != 'golf putt' && action.type != 'baseball swing'">
                             <tr ng-repeat="metric in action.metrics">
                                 <td>{{metric.type}}</td>
                                 <td ng-repeat="action in actions" ng-if="actions.length < 3">{{action.metric(metric.type) | displayValue: metric.storageUnits}}</td>
